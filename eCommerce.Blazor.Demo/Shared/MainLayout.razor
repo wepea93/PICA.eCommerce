@@ -1,0 +1,51 @@
+﻿@inherits LayoutComponentBase
+
+<MatDrawerContainer Style="width: 100vw; height: 100vh;">
+    <MatDrawer @bind-Opened="@Opened" Mode="@MatDrawerMode.Modal">
+        <div class="sidebar">
+            Drawer Content
+        </div>
+    </MatDrawer>
+    <MatDrawerContent>
+        <div class="mat-layout-grid" style="margin:0; padding:0;">
+            <div class="mat-layout-grid-inner" style="margin:0; padding:0;">
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                    <MatAppBar Class="jumbotron jumbotron-image" Style="background-image:url('https://mdbootstrap.com/img/Photos/Others/clothes(5)-crop.jpg') !important;background-repeat: no-repeat;background-size: cover;background-position: center center;position:relative !important;">
+                        <MatAppBarRow Style="background-color: rgba(0,0,0,.7) !important;">
+                            <MatAppBarSection>
+                                <MatIconButton Icon="menu" OnClick="@((e) => ButtonClicked())"></MatIconButton>
+                                <MatAppBarTitle>MatBlazor - Material Design components for Blazor</MatAppBarTitle>
+                            </MatAppBarSection>
+                            <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+                                <MatIconButton Icon="favorite"></MatIconButton>
+                            </MatAppBarSection>
+                        </MatAppBarRow>
+                        <MatAppBarRow Style="background-color: rgba(0,0,0,.7) !important;">
+                        </MatAppBarRow>
+                        <MatAppBarRow Style="background-color: rgba(0,0,0,.7) !important; display: block; text-align:center">
+                            <MatAppBarTitle>Shop</MatAppBarTitle>
+                        </MatAppBarRow>
+                        <MatAppBarRow Style="background-color: rgba(0,0,0,.7) !important;">
+                        </MatAppBarRow>
+                    </MatAppBar>
+                </div>
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                    @Body
+                </div>
+            </div>
+        </div>
+
+    </MatDrawerContent>
+</MatDrawerContainer>
+
+
+@code
+{
+    bool Opened = false;
+
+    void ButtonClicked()
+    {
+        Opened = !Opened;
+    }
+
+}

@@ -1,0 +1,101 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+            <FiltersComponent />
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
+
+            <div class="mat-layout-grid">
+                <div class="mat-layout-grid-inner">
+                    @foreach (var p in Productos)
+                    {
+                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+                            <ProductCard urlImg="@p.url" Nombre="@p.Nombre" Precio="@p.Precio" Descripcion="@p.Descripcion"/>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    public class Product
+    {
+        public string url { get; set; }
+        public string Precio { get; set; }
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
+    }
+
+    List<Product> Productos = new List<Product>
+    {
+        new Product
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/1.jpg",
+            Nombre = "tincidunt vitae",
+            Precio = "000,00",
+            Descripcion = ""
+        },new Product
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/2.jpg",
+            Nombre = "dignissim convallis",
+            Precio = "000,00",
+            Descripcion = ""
+        },new Product
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/3.jpg",
+            Nombre = "magna fringilla",
+            Precio = "000,00",
+            Descripcion = ""
+        },new Product
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/4.jpg",
+            Nombre = "lorem ipsum",
+            Precio = "000,00",
+            Descripcion = ""
+        },new Product
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/5.jpg",
+            Nombre = "et malesuada",
+            Precio = "000,00",
+            Descripcion = ""
+        },new Product
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/6.jpg",
+            Nombre = "amet tellus",
+            Precio = "000,00",
+            Descripcion = ""
+        },new Product
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/7.jpg",
+            Nombre = "lobortis elementum",
+            Precio = "000,00",
+            Descripcion = ""
+        },new Product
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/8.jpg",
+            Nombre = "neque vitae",
+            Precio = "000,00",
+            Descripcion = ""
+        },new Product
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/9.jpg",
+            Nombre = "sit amet",
+            Precio = "000,00",
+            Descripcion = ""
+        },new Product
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/10.jpg",
+            Nombre = "nunc vel",
+            Precio = "000,00",
+            Descripcion = ""
+        }
+    };
+
+}
