@@ -1,0 +1,184 @@
+﻿
+
+<MatH5>Subcategories</MatH5>
+
+<MatH5>Filters</MatH5>
+<MatAutocompleteList Items="@options2" FullWidth="true" TItem="Car" Label="Select car" CustomStringSelector="@(i => i.Name)">
+    <ItemTemplate>
+        <div style="display: flex; flex-direction: row; width: 100%;">
+            <div style="flex: 1;">@context.Name</div>
+            <div style="width: 150px;">@context.Price$</div>
+        </div>
+    </ItemTemplate>
+</MatAutocompleteList>
+
+<MatH6>Condition</MatH6>
+<div>
+    <MatCheckbox @bind-Value="@checked1" Label="NEW"></MatCheckbox>
+</div>
+<div>
+    <MatCheckbox @bind-Value="@checked2" Label="USED"></MatCheckbox>
+</div>
+<div>
+    <MatCheckbox @bind-Value="@checked1" Disabled="true" Label="COLLECTIBLE"></MatCheckbox>
+</div>
+<div>
+    <MatCheckbox @bind-Value="@checked2" Label="RENEWED"></MatCheckbox>
+</div>
+
+<MatH6>Avg. Customer Review</MatH6>
+<MatRadioGroup @bind-Value="@Val1" TValue="string">
+    <div>
+        <MatRadioButton TValue="string">
+            <p style="margin:0">
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+            </p>
+        </MatRadioButton>
+    </div>
+    <div>
+        <MatRadioButton TValue="string">
+            <p style="margin:0">
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star"></MatIcon>
+            </p>
+        </MatRadioButton>
+    </div>
+    <div>
+        <MatRadioButton TValue="string">
+            <p style="margin:0">
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star"></MatIcon>
+                <MatIcon Icon="star"></MatIcon>
+            </p></MatRadioButton>
+    </div>
+    <div>
+        <MatRadioButton TValue="string">
+            <p style="margin:0">
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star"></MatIcon>
+                <MatIcon Icon="star"></MatIcon>
+                <MatIcon Icon="star"></MatIcon>
+            </p></MatRadioButton>
+    </div>
+    <div>
+        <MatRadioButton TValue="string">
+            <p style="margin:0">
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star"></MatIcon>
+                <MatIcon Icon="star"></MatIcon>
+                <MatIcon Icon="star"></MatIcon>
+                <MatIcon Icon="star"></MatIcon>
+            </p></MatRadioButton>
+    </div>
+</MatRadioGroup>
+
+<MatH6>Price</MatH6>
+
+<MatRadioGroup @bind-Value="@Val1" TValue="string">
+    <div>
+        <MatRadioButton TValue="string" Label="Under $25" />
+    </div>
+    <div>
+        <MatRadioButton TValue="string" Label="$25 to $50" />
+    </div>
+    <div>
+        <MatRadioButton TValue="string" Label="$50 to $100" />
+    </div>
+    <div>
+        <MatRadioButton Disabled="true" Label="$100 to $200" TValue="string" />
+    </div>
+    <div>
+        <MatRadioButton TValue="string" Label="$200 & ABOVE" />
+    </div>
+    <div>
+        <MatRadioButton TValue="string" Label="Other" />
+    </div>
+</MatRadioGroup>
+<p>
+    <MatNumericUpDownField Label="MIN"
+                           @bind-Value=@testingCurrency
+                           FieldType="MatNumericUpDownFieldType.Currency"
+                           DecimalPlaces=2
+                           Style="width:200px">
+    </MatNumericUpDownField>
+    -
+    <MatNumericUpDownField Label="MAX"
+                           @bind-Value=@testingCurrency
+                           FieldType="MatNumericUpDownFieldType.Currency"
+                           DecimalPlaces=2
+                           Style="width:200px">
+    </MatNumericUpDownField>
+</p>
+
+<MatH6>Color</MatH6>
+<div>
+    <MatFAB Style="@colorStarWhiteStyle"></MatFAB>
+    <MatFAB Style="@colorStarGrayStyle"></MatFAB>
+    <MatFAB Style="@colorStarDarkStyle"></MatFAB>
+    <MatFAB Style="@colorStarGreenStyle"></MatFAB>
+    <MatFAB Style="@colorStarBlueStyle"></MatFAB>
+    <MatFAB Style="@colorStarPurpeStyle"></MatFAB>
+    <MatFAB Style="@colorStarYellowStyle"></MatFAB>
+    <MatFAB Style="@colorStarRedStyle"></MatFAB>
+    <MatFAB Style="@colorStarTealStyle"></MatFAB>
+    <MatFAB Style="@colorStarOrangeStyle"></MatFAB>
+</div>
+
+
+@code {
+    public class Car
+    {
+        public string Name { get; set; }
+        public double Price { get; set; }
+
+        public Car(string name, double price)
+        {
+            Name = name;
+            Price = price;
+        }
+    }
+
+    Car value = null;
+    bool checked1 = true;
+    bool checked2 = true;
+    protected string Val1;
+    decimal testingCurrency = 0m;
+
+    string colorStarStyle = $"color:{MatThemeColors.Orange._500.Value};";
+
+    
+    string colorStarWhiteStyle = "background-color:#fff !important";
+    string colorStarGrayStyle = "background-color:#6c757d !important";
+    string colorStarDarkStyle = $"background-color:#343a40 !important";
+    string colorStarGreenStyle = $"background-color:#28a745 !important";
+    string colorStarBlueStyle = $"background-color:#17a2b8 !important";
+    string colorStarPurpeStyle = $"background-color:#6f42c1 !important";
+    string colorStarYellowStyle = $"background-color:#ffc107 !important";
+    string colorStarRedStyle = $"background-color:#dc3545 !important";
+    string colorStarTealStyle = $"background-color:#20c997 !important";
+    string colorStarOrangeStyle = $"background-color:#fd7e14 !important";
+
+
+
+
+    Car[] options2 = new[]
+                                            {
+                new Car("Volkswagen Golf", 10000),
+                new Car("Volkswagen Passat", 11000),
+                new Car("Volkswagen Polo", 12000),
+                new Car("Ford Focus", 13000),
+                new Car("Ford Fiesta", 14000),
+                new Car("Ford Fusion", 15000),
+                new Car("Ford Mondeo", 16000),
+            };
+}
