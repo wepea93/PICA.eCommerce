@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>eCommerce.Blazor.Demo</title>
     <base href="/" />
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <!--<link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />-->
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script src="js/bootstrap.min.js"></script>
+
     <script src="_content/MatBlazor/dist/matBlazor.js"></script>
     <link href="_content/MatBlazor/dist/matBlazor.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
@@ -21,6 +25,43 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
+
+    <script>
+
+        let attached = false;
+
+        
+
+        function myImageFunction(productSmallImg) {
+            let imageContainer = document.getElementById("img-Box");
+            imageContainer.src = productSmallImg.src;
+        }
+
+        const followMouse = (event) => {
+            let imageContainer = document.getElementById("img-Box");
+            //imageContainer.style.left = event.x + "px";
+            //imageContainer.style.top = event.y + "px";
+            //imageContainer.style.transform = "scale(2.5) translate(" + (-event.x) + "," + (-event.y) +"%)";
+
+        }
+
+        function showImage() {
+            if (!attached) {
+                let imageContainer = document.getElementById("img-Box");
+                attached = true;
+                //imageContainer.style.display = "block";
+                document.addEventListener("pointermove", followMouse);
+            }
+        }
+
+        function hideImage() {
+            let imageContainer = document.getElementById("img-Box");
+            attached = false;
+            imageContainer.style.display = "relative";
+            //imageContainer.style.transform = "scale(1)";
+            document.removeEventListener("pointermove", followMouse);
+        }
+    </script>
     <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
 </body>

@@ -1,6 +1,6 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>@mainLayout.Title</PageTitle>
 
 <div class="mat-layout-grid">
     <div class="mat-layout-grid-inner">
@@ -11,12 +11,22 @@
 
             <div class="mat-layout-grid">
                 <div class="mat-layout-grid-inner">
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-1">
+                        <MatIconButton Icon="view_module" ToggleIcon="view_list" />
+                    </div>
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-11">
+                        <MatPaginator Length="100" PageSize="10"></MatPaginator>
+                    </div>
                     @foreach (var p in Productos)
                     {
                         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
-                            <ProductCard urlImg="@p.url" Nombre="@p.Nombre" Precio="@p.Precio" Descripcion="@p.Descripcion"/>
+                            <ProductCard urlImg="@p.url" Nombre="@p.Nombre" Precio="@p.Precio" Descripcion="@p.Descripcion" />
                         </div>
                     }
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <MatPaginator Length="100" PageSize="10"></MatPaginator>
+                    </div>
                 </div>
             </div>
         </div>
@@ -24,6 +34,14 @@
 </div>
 
 @code {
+
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+
+    protected override void OnInitialized()
+    {
+        mainLayout.Title = "Shop";
+    }
 
     public class Product
     {
