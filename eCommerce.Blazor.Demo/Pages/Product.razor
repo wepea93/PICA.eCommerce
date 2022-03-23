@@ -1,0 +1,148 @@
+﻿@page "/Product/{id:int}"
+
+<PageTitle>@mainLayout.Title</PageTitle>
+
+
+
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+            <div class="mat-layout-grid">
+                <div class="mat-layout-grid-inner">
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2">
+                        <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg" onclick="myImageFunction(this)" style="width:125px!important" class="img-thumbnail rounded float-left" alt="...">
+                        <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/13a.jpg" onclick="myImageFunction(this)" style="width:125px!important" class="img-thumbnail rounded float-left" alt="...">
+                        <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/14a.jpg" onclick="myImageFunction(this)" style="width:125px!important" class="img-thumbnail rounded float-left" alt="...">
+                        <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/15a.jpg" onclick="myImageFunction(this)" style="width:125px!important" class="img-thumbnail rounded float-left" alt="...">
+                    </div>
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-10 image-container">
+                        <figure class="view overlay rounded z- main-img" style="min-height:450px">
+                            <img id="img-Box"
+                                 src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg"
+                                 class="img-fluid"
+                                 onpointerenter="showImage()" onpointerleave="hideImage()" />
+                        </figure>
+                        @*<div class="myProducts">*@
+                        @*<div class="myProducts-gallery">
+                            <img src="https://media.geeksforgeeks.org/wp-content/uploads/20211110154408/DSwithCPPWorkshopthumbnail.png"
+                            alt="click here"
+                            onclick="myImageFunction(this)">
+                            <img src="https://media.geeksforgeeks.org/wp-content/uploads/20211110154411/fullstacknodereactworkshopthumbnail.png"
+                            alt="click here"
+                            onclick="myImageFunction(this)">
+                            <img src="https://media.geeksforgeeks.org/wp-content/uploads/20211110154416/systemdesignworkshoplivethumbnail.png"
+                            alt="click here"
+                            onclick="myImageFunction(this)">
+                            <img src="https://media.geeksforgeeks.org/wp-content/uploads/20211110154413/getplacedseries1thumbnail.png"
+                            alt="click here"
+                            onclick="myImageFunction(this)">
+                            </div>*@
+
+                        @*  <div class="image-container">
+                            <img id="img-Box" src="https://media.geeksforgeeks.org/wp-content/uploads/20211110154408/DSwithCPPWorkshopthumbnail.png"
+                            alt="click here">
+                            </div>
+                            </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+            <MatH5>tincidunt vitae</MatH5>
+            <p>SHIRTS</p>
+            <p style="margin:0">
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
+            </p>
+            <MatSubtitle2 class="demo-mat-card-clean-margin">
+                $ 00000,00
+            </MatSubtitle2>
+            <p>sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum varius sit amet mattis vulputate enim nulla aliquet porttitor lacus luctus accumsan tortor posuere ac ut consequat semper viverra nam libero justo laoreet sit amet cursus sit amet dictum sit amet justo donec enim diam vulputate ut pharetra sit amet aliquam id diam maecenas ultricies mi eget mauris pharetra et ultrices neque ornare aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo nec ultrices dui sapien eget mi proin sed libero enim sed faucibus turpis in eu mi bibendum neque</p>
+            <div class="table-responsive">
+                <table class="table table-sm table-borderless mb-0">
+                    <tbody>
+                        <tr>
+                            <th class="pl-0 w-25" scope="row"><strong>Model</strong></th>
+                            <td>Shirt 5407X</td>
+                        </tr>
+                        <tr>
+                            <th class="pl-0 w-25" scope="row"><strong>Color</strong></th>
+                            <td>Blue</td>
+                        </tr>
+                        <tr>
+                            <th class="pl-0 w-25" scope="row"><strong>Delivery</strong></th>
+                            <td>USA, Europe</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <hr/>
+            <div class="table-responsive mb-2">
+                <table class="table table-sm table-borderless">
+                    <tbody>
+                        <tr>
+                            <td class="pl-0 pb-0 w-25">Quantity</td>
+                            <td class="pb-0">Select size</td>
+                        </tr>
+                        <tr>
+                            <td class="pl-0">
+                                <MatNumericUpDownField Label="MIN"
+                                                       @bind-Value=@testingCurrency
+                                                       FieldType="MatNumericUpDownFieldType.Currency"
+                                                       DecimalPlaces=2
+                                                       Style="width:200px">
+                                </MatNumericUpDownField>
+                            </td>
+                            <td>
+                                <div class="mt-1">
+                                    <MatRadioGroup TValue="string">
+                                        <MatRadioButton TValue="string">Small</MatRadioButton>
+                                        <MatRadioButton TValue="string">Medium</MatRadioButton>
+                                        <MatRadioButton TValue="string">Large</MatRadioButton>
+                                    </MatRadioGroup>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+        <MatTabGroup>
+            <MatTab Label="Description">
+                First Content
+            </MatTab>
+            <MatTab Label="Information">
+                Second Content
+            </MatTab>
+           <MatTab Label="Reviews (1)">
+                Third Content
+            </MatTab> 
+        </MatTabGroup>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+
+    protected override void OnInitialized()
+    {
+        mainLayout.Title = "Product";
+    }
+
+    [Parameter]
+    public int? id { get; set; }
+
+    string colorStarStyle = $"color:{MatThemeColors.Orange._500.Value};";
+
+    decimal testingCurrency = 0m;
+}

@@ -1,7 +1,15 @@
 ﻿
 
 <MatH5>Subcategories</MatH5>
-
+<div>
+     <MatTreeView TNode="TreeNodeModel"
+                  RootNodes="@MyRootNode"
+                  GetChildNodesCallback="@((n)=>n.Nodes)">
+            <NodeTemplate>                
+                @context.Name
+            </NodeTemplate>
+        </MatTreeView>
+</div>
 <MatH5>Filters</MatH5>
 <MatAutocompleteList Items="@options2" FullWidth="true" TItem="Car" Label="Select car" CustomStringSelector="@(i => i.Name)">
     <ItemTemplate>
@@ -148,7 +156,6 @@
         }
     }
 
-    Car value = null;
     bool checked1 = true;
     bool checked2 = true;
     protected string Val1;
@@ -156,7 +163,7 @@
 
     string colorStarStyle = $"color:{MatThemeColors.Orange._500.Value};";
 
-    
+
     string colorStarWhiteStyle = "background-color:#fff !important";
     string colorStarGrayStyle = "background-color:#6c757d !important";
     string colorStarDarkStyle = $"background-color:#343a40 !important";
@@ -180,5 +187,55 @@
                 new Car("Ford Fiesta", 14000),
                 new Car("Ford Fusion", 15000),
                 new Car("Ford Mondeo", 16000),
+            };
+
+    class TreeNodeModel
+    {
+        public string Name { get; set; }
+        public TreeNodeModel[] Nodes { get; set; } = new TreeNodeModel[0];
+    }
+
+    TreeNodeModel[] MyRootNode =  new TreeNodeModel[]
+            {
+                new TreeNodeModel(){
+                    Name = "Book",
+                    Nodes = new TreeNodeModel[] {
+                        new TreeNodeModel(){
+                            Name = "Chapter 1",
+                            Nodes = new TreeNodeModel[] {
+                                new TreeNodeModel(){
+                                    Name = "Heading",
+                                },
+                                new TreeNodeModel(){
+                                    Name = "Content",
+                                }
+                            }
+                        },
+                        new TreeNodeModel(){
+                            Name = "Chapter 2",
+                            Nodes = new TreeNodeModel[] {
+                                new TreeNodeModel(){
+                                    Name = "Heading",
+                                },
+                                new TreeNodeModel(){
+                                    Name = "Content",
+                                }
+                            }
+                        },
+                        new TreeNodeModel(){
+                            Name = "Chapter 3",
+                            Nodes = new TreeNodeModel[] {
+                                new TreeNodeModel(){
+                                    Name = "Heading",
+                                },
+                                new TreeNodeModel(){
+                                    Name = "Content",
+                                }
+                            }
+                        }
+                    } 
+                },
+                new TreeNodeModel(){Name = "Car"},
+                new TreeNodeModel(){Name = "Tech"}
             };
 }
