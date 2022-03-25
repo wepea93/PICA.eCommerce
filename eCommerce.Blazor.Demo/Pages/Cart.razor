@@ -1,0 +1,177 @@
+﻿@page "/Cart"
+
+<PageTitle>@mainLayout.Title</PageTitle>
+
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-9">
+            <MatH5>Cart (@Productos.Count items)</MatH5>
+            <div class="mat-layout-grid">
+                <div class="mat-layout-grid-inner">
+                    @foreach (var p in Productos)
+                    {
+                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                            <ProductCart urlImg="@p.url" Nombre="@p.Nombre" Precio="@p.Precio" Descripcion="@p.Descripcion" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+            <MatH5>The total amount of</MatH5>
+
+            <div class="mat-layout-grid">
+                <div class="mat-layout-grid-inner">
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                Temporary amount
+                                <span>$53.98</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                Shipping
+                                <span>Gratis</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                <div>
+                                    <strong>The total amount of</strong>
+                                    <strong>
+                                        <p class="mb-0">(including VAT)</p>
+                                    </strong>
+                                </div>
+                                <span><strong>$53.98</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <MatButtonLink Href="/ButtonLink" Unelevated="true" Style="text-align:center;">go to checkout</MatButtonLink>
+                    </div>
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <hr />
+                    </div>
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <MatH6 class="panel-title">Add a discount code (optional)</MatH6>
+
+                                <MatTextField @bind-Value="@MyString2" Label="Enter discount code" Icon="@MatIconNames.Code" FullWidth="true"></MatTextField>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <div class="card mb-4">
+                            <div class="card-body">
+
+                                <h6 class="mb-4">Expected shipping delivery</h6>
+
+                                <p class="mb-4"> Thu., 12.03. - Mon., 16.03.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <div class="card mb-4">
+                            <div class="card-body">
+
+                                <h5 class="mb-4">We accept</h5>
+                                <img class="mr-2" width="45px" src="https://mdbootstrap.com/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg" alt="Visa">
+                                <img class="mr-2" width="45px" src="https://mdbootstrap.com/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg" alt="American Express">
+                                <img class="mr-2" width="45px" src="https://mdbootstrap.com/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg" alt="Mastercard">
+                                <img class="mr-2" width="45px" src="https://cdn.icon-icons.com/icons2/1178/PNG/512/paypal-inverted_82042.png" alt="PayPal acceptance mark">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+
+    public string MyString2 { get; set; }
+    protected override void OnInitialized()
+    {
+        mainLayout.Title = "Shopping cart";
+    }
+
+    public class ProductCar
+    {
+        public string url { get; set; }
+        public string Precio { get; set; }
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
+    }
+
+    List<ProductCar> Productos = new List<ProductCar>
+    {
+        new ProductCar
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/1.jpg",
+            Nombre = "tincidunt vitae",
+            Precio = "000,00",
+            Descripcion = ""
+        },new ProductCar
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/2.jpg",
+            Nombre = "dignissim convallis",
+            Precio = "000,00",
+            Descripcion = ""
+        },new ProductCar
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/3.jpg",
+            Nombre = "magna fringilla",
+            Precio = "000,00",
+            Descripcion = ""
+        },new ProductCar
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/4.jpg",
+            Nombre = "lorem ipsum",
+            Precio = "000,00",
+            Descripcion = ""
+        },new ProductCar
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/5.jpg",
+            Nombre = "et malesuada",
+            Precio = "000,00",
+            Descripcion = ""
+        },new ProductCar
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/6.jpg",
+            Nombre = "amet tellus",
+            Precio = "000,00",
+            Descripcion = ""
+        },new ProductCar
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/7.jpg",
+            Nombre = "lobortis elementum",
+            Precio = "000,00",
+            Descripcion = ""
+        },new ProductCar
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/8.jpg",
+            Nombre = "neque vitae",
+            Precio = "000,00",
+            Descripcion = ""
+        },new ProductCar
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/9.jpg",
+            Nombre = "sit amet",
+            Precio = "000,00",
+            Descripcion = ""
+        },new ProductCar
+        {
+            url = @"https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/10.jpg",
+            Nombre = "nunc vel",
+            Precio = "000,00",
+            Descripcion = ""
+        }
+    };
+
+}

@@ -1,0 +1,84 @@
+﻿<style>
+    .demo-mat-card {
+    }
+
+    .demo-mat-card-content {
+        padding: 1rem;
+    }
+
+    .demo-mat-card-clean-margin {
+        margin: 0px;
+    }
+</style>
+
+<MatCard class="demo-mat-card">
+    <MatCardContent style="cursor:auto">
+        <div class="mat-layout-grid" style="margin:0; padding:0;">
+            <div class="mat-layout-grid-inner" style="margin:0; padding:0;">
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                    @*<MatCardMedia Wide="true" ImageUrl="https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg"></MatCardMedia>*@
+                    <figure class="view overlay rounded z- main-img" style="margin: 0;">
+                        <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg"
+                             class="img-fluid" />
+                    </figure>
+                </div>
+                <div class="mat-layout-grid-inner mat-layout-grid-cell mat-layout-grid-cell-span-9">
+                    @*<div class="mat-layout-grid" style="margin:0; padding:0;">
+                        <div class="mat-layout-grid-inner" style="margin:0; padding:0;">*@
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-9">
+                        <div class="demo-mat-card-content">
+                            <MatHeadline6 class="demo-mat-card-clean-margin">
+                                Our Changing Planet
+                            </MatHeadline6>
+                            <MatSubtitle2 class="demo-mat-card-clean-margin">
+                                by Kurt Wagner
+                            </MatSubtitle2>
+                        </div>
+                        <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
+                            Visit ten places on our planet that are undergoing the biggest changes today.
+                        </MatBody2>
+                    </div>
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3" style="padding:10px;">
+                        <MatNumericUpDownField Label="Cantidad"
+                                               @bind-Value=@Cantidad                                          
+                                               FieldType="MatNumericUpDownFieldType.Numeric"
+                                               Style="vertical-align:middle">
+                        </MatNumericUpDownField>
+                    </div>
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-9 mat-layout-grid-cell-align-bottom">
+                        <MatCardActions>
+                            <MatCardActionIcons>
+                                <MatIconButton Icon="@MatIconNames.Remove_shopping_cart"></MatIconButton>
+                                <MatIconButton Icon="@MatIconNames.Favorite"></MatIconButton>
+                            </MatCardActionIcons>
+                        </MatCardActions>
+                    </div>
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3 mat-layout-grid-cell-align-bottom">
+                        <MatH6>$00000,000</MatH6>
+                    </div>
+                    @* </div>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </MatCardContent>
+    @*    <MatCardActions>
+        <MatCardActionIcons>
+        <MatIconButton Icon="@MatIconNames.Remove_shopping_cart"></MatIconButton>
+        <MatIconButton Icon="@MatIconNames.Favorite"></MatIconButton>
+        </MatCardActionIcons>
+        </MatCardActions>*@
+</MatCard>
+
+@code {
+    [Parameter]
+    public string urlImg { get; set; }
+    [Parameter]
+    public string Precio { get; set; }
+    [Parameter]
+    public string Nombre { get; set; }
+    [Parameter]
+    public string Descripcion { get; set; }
+    [Parameter]
+    public int Cantidad { get; set; }
+}
