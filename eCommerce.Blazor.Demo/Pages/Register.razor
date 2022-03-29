@@ -1,0 +1,93 @@
+﻿@layout LoginLayout
+@page "/Register"
+
+<div class="mat-layout-grid-cell mat-layout-grid-cell-span-12 text-center">
+    <form class="form-signin ">
+        <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+        <MatH4 Class="h3 mb-3 font-weight-normal">Sign up</MatH4>
+
+
+        <div class="container-sm pb-2">
+
+            <div class="form-row">
+                <div class="col">
+                    <div class="md-form md-outline mt-0">
+                        <input type="text" id="materialRegisterFormFirstName" class="form-control">
+                        <label for="materialRegisterFormFirstName">First name</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="md-form md-outline mt-0">
+                        <input type="email" id="materialRegisterFormLastName" class="form-control">
+                        <label for="materialRegisterFormLastName">Last name</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md-form md-outline mt-0">
+                <input type="email" id="defaultForm-email2" class="form-control">
+                <label data-error="wrong" data-success="right" for="defaultForm-email2">Your email</label>
+            </div>
+            <div class="md-form md-outline mt-0">
+                <input type="password" id="defaultForm-pass2" class="form-control">
+                <label data-error="wrong" data-success="right" for="defaultForm-pass2">Your password</label>
+                <small id="materialRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+                    At least 8 characters and 1 digit
+                </small>
+            </div>
+
+            <div class="md-form md-outline">
+                <input type="number" id="materialRegisterFormPhone" class="form-control" aria-describedby="materialRegisterFormPhoneHelpBlock">
+                <label for="materialRegisterFormPhone">Phone number</label>
+                <small id="materialRegisterFormPhoneHelpBlock" class="form-text text-muted mb-3">
+                    Optional - for two step authentication
+                </small>
+            </div>
+
+        </div>
+        <div class="container-sm pb-2">
+
+            <div class="form-check pl-0 mb-3">
+                <input type="checkbox" class="form-check-input filled-in" id="new1">
+                <label class="form-check-label small text-uppercase card-link-secondary" for="new1">Subscribe to our newsletter</label>
+            </div>
+
+        </div>
+        <div class="container-sm pb-2">
+
+            <button type="submit" class="btn btn-primary mb-4">Sign up</button>
+
+            <p>or sign in with:</p>
+
+            <a type="button" class="btn-floating btn-fb btn-sm mr-1">
+                <i class="bi bi-facebook"></i>
+            </a>
+            <a type="button" class="btn-floating btn-tw btn-sm mr-1">
+                <i class="bi bi-twitter"></i>
+            </a>
+            <a type="button" class="btn-floating btn-li btn-sm mr-1">
+                <i class="bi bi-linkedin"></i>
+            </a>
+            <a type="button" class="btn-floating btn-git btn-sm">
+                <i class="bi bi-github"></i>
+            </a>
+
+        </div>
+
+        @*<label for="inputEmail" class="sr-only">Email address</label>
+            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+            <div class="checkbox mb-3">
+            <label>
+            <input type="checkbox" value="remember-me"> Remember me
+            </label>
+            </div>*@
+        <p class="mt-5 mb-3 text-muted">© @actualAnno</p>
+    </form>
+</div>
+@code {
+
+    public string MyString2 { get; set; }
+    public int actualAnno { get => DateTime.Now.Year; }
+}

@@ -1,0 +1,60 @@
+﻿@layout LoginLayout
+@page "/"
+
+<div class="mat-layout-grid-cell mat-layout-grid-cell-span-12 text-center">
+    <form class="form-signin ">
+        <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+        <MatH4 Class="h3 mb-3 font-weight-normal">Sign in</MatH4>
+
+
+        <div class="container-sm pb-2">
+            <MatTextField @bind-Value="@MyString2" FullWidth="true" Class="mb-2" IconTrailing="true" Label="User Name" Icon="person"></MatTextField>
+            <MatTextField @bind-Value="@MyString2" FullWidth="true" Class="mb-2" IconTrailing="true" Label="Password" Icon="lock_outline" Type="password"></MatTextField>
+            <p style="text-align:left;">
+                <span>
+                    <input type="checkbox" value="remember-me"> Remember me
+                </span>
+                <a href="#" style="float: right;">Forgot password?</a>
+            </p>
+            @*<button class="btn btn-primary mb-4 waves-effect waves-ligh" type="submit">Sign in</button>*@
+        </div>
+        <div class="container-sm pb-2">
+
+            <button type="submit" class="btn btn-primary mb-4">Sign in</button>
+
+            <p>Not a member? <a href="">Register</a></p>
+
+            <p>or sign in with:</p>
+
+            <a type="button" class="btn-floating btn-fb btn-sm mr-1">
+                <i class="bi bi-facebook"></i>
+            </a>
+            <a type="button" class="btn-floating btn-tw btn-sm mr-1">
+                <i class="bi bi-twitter"></i>
+            </a>
+            <a type="button" class="btn-floating btn-li btn-sm mr-1">
+                <i class="bi bi-linkedin"></i>
+            </a>
+            <a type="button" class="btn-floating btn-git btn-sm">
+                <i class="bi bi-github"></i>
+            </a>
+
+        </div>
+
+        @*<label for="inputEmail" class="sr-only">Email address</label>
+            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+            <div class="checkbox mb-3">
+            <label>
+            <input type="checkbox" value="remember-me"> Remember me
+            </label>
+            </div>*@
+        <p class="mt-5 mb-3 text-muted">© @actualAnno</p>
+    </form>
+</div>
+@code {
+
+    public string MyString2 { get; set; }
+    public int actualAnno { get => DateTime.Now.Year; }
+}
