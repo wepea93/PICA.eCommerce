@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -34,7 +33,7 @@ namespace WebApiProducts.Config
                 }
 
                 var token = context.HttpContext.Request.Headers["Authorization"];
-                var isAuthorized = IsAutorized(token);
+                var isAuthorized = await IsAutorized(token);
 
                 if (!isAuthorized)
                 {
@@ -45,10 +44,10 @@ namespace WebApiProducts.Config
             catch (Exception ex)
             {
                 context.Result = GetErrorResponse();
-            }          
+            }
         }
 
-        private static bool IsAutorized(string token)
+        private async Task<bool> IsAutorized(string token)
         {
             var apiCode = AppConfiguration.Configuration["AppConfiguration:ApiCode"].ToString();
             var apiAutorizedUrl = AppConfiguration.Configuration["AppConfiguration:ApiAutorizedUrl"].ToString();
@@ -57,20 +56,33 @@ namespace WebApiProducts.Config
             var client = new RestClient(apiAutorizedUrl);
             var requestService = new RestRequest(apiAutorizedMethod, Method.Post);
 
-            requestService.AddParameter("accessToken", token);
-            requestService.AddParameter("appCode", apiCode);
+            var authObject = new Authenticate(token, apiCode);
 
-            var response = client.ExecuteAsync(requestService);
-            return response.Result.StatusCode == System.Net.HttpStatusCode.OK;
+            requestService.AddJsonBody(authObject);
+
+            var response = await client.ExecutePostAsync(requestService);
+            return response.StatusCode == System.Net.HttpStatusCode.OK;
         }
 
-        private JsonResult GetErrorResponse() 
+        private JsonResult GetErrorResponse()
         {
             var UnauthorizedResponse = new ServiceResponse<string>("Unauthorized", null);
             return new JsonResult(UnauthorizedResponse)
             {
                 StatusCode = StatusCodes.Status401Unauthorized
             };
+        }
+
+        private class Authenticate 
+        {
+            public string AccessToken { get; set; }
+            public string AppCode { get; set; }
+
+            public Authenticate(string accessToken, string appCode) 
+            {
+                AccessToken = accessToken;
+                AppCode = appCode;
+            }
         }
     }
 }

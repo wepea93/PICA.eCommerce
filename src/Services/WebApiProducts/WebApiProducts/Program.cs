@@ -45,7 +45,10 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c=>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API de Productos", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = AppConfiguration.Configuration["AppConfiguration:ApiSwaggerName"].ToString(), Version = "v1" });
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -114,6 +117,9 @@ builder.Host.UseSerilog((ctx, lc) => lc
 builder.Services.AddDbContext<DbProductsContext>(
     options => options.UseSqlServer(AppConfiguration.Configuration["AppConfiguration:DataBases:DbProducts:ConnectionString"].ToString()));
 
+builder.Services.AddScoped<IProductProviderRepository, ProductProviderRepository>();
+builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
+builder.Services.AddScoped<IProductReviewRepository, ProductReviewRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IDbProductHelper, DbProductHelper>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -136,7 +142,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
+        c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", AppConfiguration.Configuration["AppConfiguration:ApiSwaggerName"].ToString());
+    });
 }
 
 app.Use(async (context, next) =>

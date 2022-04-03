@@ -1,5 +1,4 @@
-﻿
-using Products.Core.Helpers.ProductReview;
+﻿using Products.Core.Helpers.ProductReview;
 using Products.Core.Objects.DbTypes;
 using Products.Core.Objects.Dtos;
 using Products.Core.Objects.Responses;
@@ -44,6 +43,7 @@ namespace Products.Core.Helpers.Mappers
             if (reviews && productEntity.ProductReviews != null && productEntity.ProductReviews.Any())
                 productDto.Reviews = productEntity.ProductReviews.Select(y => new ProductReviewDto()
                 {
+                    Id = y.Id,    
                     UserId = y.UserId,
                     UserName = y.UserName,
                     Value = y.Value,
@@ -90,6 +90,7 @@ namespace Products.Core.Helpers.Mappers
             if (productDto.Reviews != null && productDto.Reviews.Any())
                 productResponse.Reviews = productDto.Reviews.Select(y => new ProductReviewResponse()
                 {
+                    Id = y.Id,
                     UserId = y.UserId,
                     UserName = y.UserName,
                     Value = y.Value,
@@ -104,5 +105,6 @@ namespace Products.Core.Helpers.Mappers
             if (productDtoList == null) return null;
             return productDtoList.Select(x => MappToProductResponse(x));
         }
+
     }
 }
