@@ -7,5 +7,8 @@ namespace Products.Core.Contracts.Services
         Task<ProductDto> GetProduct(long productCode);
         ProductCatalogDto GetProductCatalog(ProductSearchDto productSearch);
         IEnumerable<ProductDto> GetProducts(IEnumerable<long> productsId);
+        IEnumerable<ProductCategoryDto>? GetProductCategories();
+        IEnumerable<ProductProviderDto>? GetProductProviders(int productCategoryId);
+        Task CreateProductReview(ProductReviewDto productReview);
     }
 }
