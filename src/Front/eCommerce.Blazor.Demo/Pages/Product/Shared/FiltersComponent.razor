@@ -1,0 +1,203 @@
+﻿
+<MudStack class="mud-width-full pa-4">
+    <div class="d-flex align-center justify-space-between">
+        <MudText Typo="Typo.h5">Categories</MudText>
+        <MudButtonGroup Color="Color.Primary" Variant="Variant.Text">
+            <MudButton OnClick="ClearFilter_Click">Clear</MudButton>
+            <MudButton OnClick="ApplyFilter_Click">Apply</MudButton>
+        </MudButtonGroup>
+    </div>
+    <MudPaper Elevation="0" MaxHeight="250px" Style="overflow:auto">
+        <MudTreeView Items="@(Categorias.ToHashSet())" @bind-SelectedValue="currentCategory" Hover="true">
+            <ItemTemplate>
+                <MudTreeViewItem Value="@context" LoadingIconColor="Color.Info" Text="@context.Parent.Category" EndTextTypo="@Typo.caption" Selected="@(currentCategory == @context)" />
+            </ItemTemplate>
+        </MudTreeView>
+    </MudPaper>
+    <MudDivider Class="my-2" />
+    <MudText Typo="Typo.h5" Class="mt-4">Filters</MudText>
+    <MudPaper Elevation="1" class="px-1">
+        <MudTextField @bind-Value="filterText"
+                      Label="search..." Variant="Variant.Text"
+                      Adornment="Adornment.End"
+                      AdornmentIcon="@Icons.Filled.Search"
+                      AdornmentColor="Color.Secondary" />
+    </MudPaper>
+    <MudText Typo="Typo.h6" Class="mt-2">Condition</MudText>
+    <MudPaper Elevation="0" class="px-1">
+        <div>
+            <MudCheckBox @bind-Checked="@filterIsNew" Label="NEW"></MudCheckBox>
+        </div>
+        <div>
+            <MudCheckBox @bind-Checked="@filterIsUsed" Label="USED"></MudCheckBox>
+        </div>
+        <div>
+            <MudCheckBox @bind-Checked="@filterIsRenewed" Label="RENEWED"></MudCheckBox>
+        </div>
+    </MudPaper>
+    <MudText Typo="Typo.h6" Class="mt-2">Price</MudText>
+    <MudPaper Elevation="0" class="px-1">
+        <MudRadioGroup T="string" SelectedOptionChanged="rbgFilterTypePrice_OnChange" Class="d-flex flex-column flex-grow-1 gap-4">
+            <MudRadio Color="Color.Primary" Option="@("Under")">Menos de $10mil</MudRadio>
+            <MudRadio Color="Color.Primary" Option="@("Range1")">$10mil to $100mil</MudRadio>
+            <MudRadio Color="Color.Primary" Option="@("Range2")">$100mill to $500mill</MudRadio>
+            <MudRadio Color="Color.Primary" Option="@("Range3")">$500mill to $2millones</MudRadio>
+            <MudRadio Color="Color.Primary" Option="@("Above")">Mas De $2millones</MudRadio>
+            <MudRadio Color="Color.Primary" Option="@("Other")">Otro</MudRadio>
+        </MudRadioGroup>
+        <div class="d-flex align-center">
+            <MudTextField id="TxtMinPrice" @bind-Value="_filterMinPrice" Label="Min..." Variant="Variant.Text" InputType="InputType.Number" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                          Disabled="@(_filterTypePrice != "Other")" />
+            <MudText Typo="Typo.h6" Class="px-2">to</MudText>
+            <MudTextField id="TxtMaxPrice" @bind-Value="_filterMaxPrice" Label="Max" Variant="Variant.Text" InputType="InputType.Number" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                          Disabled="@(_filterTypePrice != "Other")" />
+        </div>
+    </MudPaper>
+    <MudText Typo="Typo.h6" Class="mt-2">Review</MudText>
+    <MudPaper Elevation="0" class="px-1">
+        <MudRating Size="Size.Large" @bind-SelectedValue="filterScore" />
+    </MudPaper>
+</MudStack>
+
+@code {
+
+    #region component parameters
+    [Parameter]
+    public int? filterCategory { get; set; }
+    [Parameter]
+    public int? filterProvider { get; set; }
+    [Parameter]
+    public string? filterText { get; set; }
+    [Parameter]
+    public bool? filterIsNew { get; set; }
+    [Parameter]
+    public bool? filterIsUsed { get; set; }
+    [Parameter]
+    public bool? filterIsRenewed { get; set; }
+    [Parameter]
+    public decimal? filterMinPrice { get; set; }
+    [Parameter]
+    public decimal? filterMaxPrice { get; set; }
+    [Parameter]
+    public int filterScore { get; set; }
+    [Parameter]
+    public EventCallback<FiltersComponent> OnFilterChangeCallback { get; set; }
+    #endregion
+
+    #region component properties
+    protected decimal? _filterMinPrice = 0;
+    protected decimal? _filterMaxPrice = 0;
+    protected string? _filterTypePrice;
+    protected List<TreeNodeCategoryModel> Categorias;
+    protected TreeNodeCategoryModel currentCategory;
+    #endregion
+
+    #region component events
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCategories();
+    }
+
+    protected async Task ClearFilter_Click()
+    {
+        await ClearFilter();
+        if (OnFilterChangeCallback.HasDelegate)
+            await OnFilterChangeCallback.InvokeAsync(this);
+    }
+
+    protected async Task ApplyFilter_Click()
+    {
+        await ApplyFilter();
+        if (OnFilterChangeCallback.HasDelegate)
+            await OnFilterChangeCallback.InvokeAsync(this);
+    }
+
+    protected async Task rbgFilterTypePrice_OnChange(string option)
+    {
+        //here, do your logic with the option
+        _filterTypePrice = option;
+        _filterMinPrice = null;
+        _filterMaxPrice = null;
+    }
+    #endregion
+
+    #region component Methos
+    protected async Task ClearFilter()
+    {
+        filterCategory = null;
+        filterProvider = null;
+        filterText = null;
+        filterIsNew = null;
+        filterIsUsed = null;
+        filterIsRenewed = null;
+        filterMinPrice = null;
+        filterMaxPrice = null;
+        filterScore = 0;
+        _filterTypePrice = null;
+        _filterMinPrice = null;
+        _filterMaxPrice = null;
+        GetCategories();
+    }
+
+    protected async Task ApplyFilter()
+    {
+        filterCategory = currentCategory.Parent.Id;
+        switch (_filterTypePrice)
+        {
+            case "Under":
+                filterMinPrice = 0;
+                filterMaxPrice = 10000;
+                break;
+            case "Range1":
+                filterMinPrice = 10000;
+                filterMaxPrice = 100000;
+                break;
+            case "Range2":
+                filterMinPrice = 100000;
+                filterMaxPrice = 500000;
+                break;
+            case "Range3":
+                filterMinPrice = 500000;
+                filterMaxPrice = 2000000;
+                break;
+            case "Above":
+                filterMinPrice = 2000000;
+                filterMaxPrice = 0;
+                break;
+            case "Other":
+                filterMinPrice = _filterMinPrice;
+                filterMaxPrice = _filterMaxPrice;
+                break;
+            default:
+                filterMinPrice = null;
+                filterMaxPrice = null;
+                _filterMinPrice = null;
+                _filterMaxPrice = null;
+                break;
+        }
+    }
+
+    protected async Task GetCategories()
+    {
+        Categorias = new List<TreeNodeCategoryModel>();
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 1, Category = "Audifonos", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 2, Category = "Camaras", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 3, Category = "Celulares", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 4, Category = "Cocinas", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 5, Category = "Computadores de Escritorio", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 6, Category = "Consolas", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 7, Category = "Impresoras", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 8, Category = "Lavadoras", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 9, Category = "Neveras", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 10, Category = "Portatiles", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 11, Category = "Relojes Inteligentes", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 12, Category = "Secadoras", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 13, Category = "Tablets", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 14, Category = "Televisores", Status = true } });
+        Categorias.Add(new TreeNodeCategoryModel() { Parent = new CategoryModel { Id = 15, Category = "Videojuegos", Status = true } });
+
+        currentCategory = filterCategory.HasValue ? Categorias.FirstOrDefault(x => x.Parent.Id == filterCategory.Value) : null;
+
+    }
+    #endregion
+}

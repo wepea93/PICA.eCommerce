@@ -1,0 +1,51 @@
+﻿
+@if (view == UtilitiesHelper.viewCard.module)
+{
+    <MudCard>
+        <MudCardMedia Image="@urlImg" />
+        <MudCardContent>
+            <MudText Typo="Typo.h6">@Nombre</MudText>
+            <MudText Typo="Typo.subtitle2">$ @Precio</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Primary" />
+            <MudIconButton Icon="@Icons.Filled.AddShoppingCart" Color="Color.Primary" />
+            <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Primary" />
+            <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Primary" />
+        </MudCardActions>
+    </MudCard>
+}
+else
+{
+    <MudPaper Elevation="1">
+        <MudStack Row="true">
+            <MudImage Src="@urlImg" Height="300" />
+            <MudStack Justify="Justify.FlexEnd" Class="pa-4" Spacing="0">
+                <MudText Typo="Typo.h6" Class="align-self-start flex-1">@Nombre</MudText>
+                <MudText Typo="Typo.subtitle2" Class="align-self-start flex-1">$ @Precio</MudText>
+                <MudText Typo="Typo.body2" Class="align-self-center flex-1" Style="text-align:justify-all !important">@Descripcion</MudText>
+                <MudStack Row="true" Justify="Justify.FlexEnd" Class="align-self-end flex-1">
+                    <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Primary" />
+                    <MudIconButton Icon="@Icons.Filled.AddShoppingCart" Color="Color.Primary" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Primary" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Primary" />
+                </MudStack>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+
+}
+
+@code {
+
+    [Parameter]
+    public string urlImg { get; set; }
+    [Parameter]
+    public string Precio { get; set; }
+    [Parameter]
+    public string Nombre { get; set; }
+    [Parameter]
+    public string Descripcion { get; set; }
+    [Parameter]
+    public UtilitiesHelper.viewCard view { get; set; } = UtilitiesHelper.viewCard.module;
+}

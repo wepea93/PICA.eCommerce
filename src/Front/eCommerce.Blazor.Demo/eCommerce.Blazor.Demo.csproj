@@ -23,6 +23,46 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.3" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.2.8" />
+    <PackageReference Include="MudBlazor" Version="6.0.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.Linq" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Pages\Cart\Cart.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Cart\Shared\ProductCart.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Login.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Product\Product.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Product\Shared\FiltersComponent.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Product\Shared\ProductCard.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Product\Shop.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Register.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Shared\LoginLayout.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Shared\MainLayout.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

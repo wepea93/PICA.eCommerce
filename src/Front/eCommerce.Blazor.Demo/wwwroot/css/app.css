@@ -62,3 +62,24 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.navbar-transparent {
+    -webkit-transition: background-color 1000ms ease-out;
+    -moz-transition: background-color 1000ms ease-out;
+    -o-transition: background-color 1000ms ease-out;
+    transition: background-color 1000ms ease-out;
+}
+
+    .navbar-transparent:not(.top-nav-collapse) {
+        background-color: transparent;
+    }
+
+    .navbar-transparent .top-nav-collapse {
+        background-color: var(--mud-palette-appbar-background);
+    }
+
+@media only screen and (max-width: 900px) {
+    .navbar-transparent:not(.top-nav-collapse) {
+        background-color: var(--mud-palette-appbar-background);
+    }
+}
