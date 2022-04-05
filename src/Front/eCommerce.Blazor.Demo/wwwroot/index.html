@@ -7,12 +7,15 @@
     <title>eCommerce.Blazor.Demo</title>
     <base href="/" />
     <!--<link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />-->
+    <!--<link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script src="js/bootstrap.min.js"></script>-->
+    <!--<script src="_content/MatBlazor/dist/matBlazor.js"></script>
+    <link href="_content/MatBlazor/dist/matBlazor.css" rel="stylesheet" />-->
 
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
-    <script src="js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 
-    <script src="_content/MatBlazor/dist/matBlazor.js"></script>
-    <link href="_content/MatBlazor/dist/matBlazor.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
     <link href="eCommerce.Blazor.Demo.styles.css" rel="stylesheet" />
 </head>
@@ -61,6 +64,22 @@
             //imageContainer.style.transform = "scale(1)";
             document.removeEventListener("pointermove", followMouse);
         }
+
+        function doSomething(scroll_pos) {
+            // Hacer algo con la posición del scroll
+        }
+
+        window.addEventListener('scroll', function (e) {
+            //console.log((window.pageYOffset || document.documentElement.scrollTop) - (document.documentElement.clientTop || 0));
+
+            let n = document.getElementsByClassName("navbar");
+            let s = (window.pageYOffset || document.documentElement.scrollTop) - (document.documentElement.clientTop || 0);
+            if (s > 50) {
+                n[0].classList.add("top-nav-collapse");
+            } else {
+                n[0].classList.remove("top-nav-collapse");
+            }
+        });
     </script>
     <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>

@@ -30,10 +30,20 @@ using System.Reflection;
 using System.Text;
 using WebApiProducts.Config;
 
-
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                    .AllowAnyHeader().
+                                        AllowAnyMethod();
+                      });
+});
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
@@ -43,7 +53,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen(c=>
+builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = AppConfiguration.Configuration["AppConfiguration:ApiSwaggerName"].ToString(), Version = "v1" });
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -190,6 +200,7 @@ app.UseHealthChecks("/healthz", new HealthCheckOptions
 ILogHelper logHelper = app.Services.GetRequiredService<ILogHelper>();
 app.ConfigureExceptionHandler(logHelper);
 
+app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 
