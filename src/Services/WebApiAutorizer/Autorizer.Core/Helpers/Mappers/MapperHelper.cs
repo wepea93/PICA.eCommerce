@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApiProductsTest
+namespace Autorizer.Core.Helpers.Mappers
 {
-    public  class ProductTestcs
+    public class MapperHelper : IMapperHelper
     {
-        [Fact]
-        public void Test1() { }
     }
 }

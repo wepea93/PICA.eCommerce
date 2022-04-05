@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Products.Core.Contracts.Services;
 using Products.Core.Helpers.Mappers;
 using Products.Core.Objects.Dtos;
@@ -9,25 +8,28 @@ using WebApiProducts.Config;
 
 namespace WebApiAuthorizer.Controllers
 {
-  //  [AuthorizationFilter]
+    [AuthorizationFilter]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly ILogger<ProductController> _logger;
         private readonly IProductServices _productService;
         private readonly IMapperHelper _mapperHelper;
 
-        public ProductController(IProductServices productService, ILogger<ProductController> logger, IMapperHelper mapper)
+        public ProductController(IProductServices productService, IMapperHelper mapper)
         {
             _productService = productService;
-            _logger = logger;
             _mapperHelper = mapper;
         }
 
+        /// <summary>
+        /// Consulta de catálogo de productos
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("Catalog")]
-        public async Task<ActionResult<ServiceResponse<ProductCatalogResponse>>> GetProductCatalog([FromQuery] ProductCatalogRequest request)
+        public ActionResult<ServiceResponse<ProductCatalogResponse>> GetProductCatalog([FromQuery] ProductCatalogRequest request)
         {
             var businessObject = new ProductSearchDto(request.CategoryId, request.ProviderId, request.Search, 
                 request.Page, request.ItemsByPage, request.Sort, request.MinPrice, request.MaxPrice);
@@ -37,6 +39,11 @@ namespace WebApiAuthorizer.Controllers
             return Ok(new ServiceResponse<ProductCatalogResponse>("Successful", response));
         }
 
+        /// <summary>
+        /// Consulta de un producto por su Id
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("Detail")]
         public async Task<ActionResult<ServiceResponse<ProductResponse>>> GetProduct([FromQuery] ProductRequest request)
@@ -46,6 +53,11 @@ namespace WebApiAuthorizer.Controllers
             return Ok(new ServiceResponse<ProductResponse>("Successful", response));
         }
 
+        /// <summary>
+        /// Consulta una lista de productos por sus Ids
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("List")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<ProductResponse>>>> GetProducts([FromQuery] ProductsRequest request)

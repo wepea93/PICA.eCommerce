@@ -5,7 +5,6 @@ using Products.Core.Objects.DbTypes;
 using Products.Core.Utilities;
 using Products.Infraestructure.Contexts.DbProduct;
 using Products.Infraestructure.DbHelpers;
-using System.Linq;
 
 namespace Products.Infraestructure.Repositories
 {
