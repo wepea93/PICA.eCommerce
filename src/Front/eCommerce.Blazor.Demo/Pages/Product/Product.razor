@@ -1,146 +1,220 @@
-﻿@page "/Product/{id:int}"
+﻿@layout MainLayout
+@page "/Product"
+@page "/Product/{Code:long}"
+
+@inject IDialogService Dialog
+@inject ProductService service
 
 <PageTitle>@mainLayout.Title</PageTitle>
 
-<div class="mat-layout-grid">
-    <div class="mat-layout-grid-inner">
-        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-            <div class="mat-layout-grid">
-                <div class="mat-layout-grid-inner">
-                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2">
-                        <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg" onclick="myImageFunction(this)" style="width:125px!important" class="img-thumbnail rounded float-left" alt="...">
-                        <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/13a.jpg" onclick="myImageFunction(this)" style="width:125px!important" class="img-thumbnail rounded float-left" alt="...">
-                        <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/14a.jpg" onclick="myImageFunction(this)" style="width:125px!important" class="img-thumbnail rounded float-left" alt="...">
-                        <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/15a.jpg" onclick="myImageFunction(this)" style="width:125px!important" class="img-thumbnail rounded float-left" alt="...">
-                    </div>
-                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-10 image-container">
-                        <figure class="view overlay rounded z- main-img" style="min-height:450px">
-                            <img id="img-Box"
-                                 src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg"
-                                 class="img-fluid"
-                                 onpointerenter="showImage()" onpointerleave="hideImage()" />
-                        </figure>
-                        @*<div class="myProducts">*@
-                        @*<div class="myProducts-gallery">
-                            <img src="https://media.geeksforgeeks.org/wp-content/uploads/20211110154408/DSwithCPPWorkshopthumbnail.png"
-                            alt="click here"
-                            onclick="myImageFunction(this)">
-                            <img src="https://media.geeksforgeeks.org/wp-content/uploads/20211110154411/fullstacknodereactworkshopthumbnail.png"
-                            alt="click here"
-                            onclick="myImageFunction(this)">
-                            <img src="https://media.geeksforgeeks.org/wp-content/uploads/20211110154416/systemdesignworkshoplivethumbnail.png"
-                            alt="click here"
-                            onclick="myImageFunction(this)">
-                            <img src="https://media.geeksforgeeks.org/wp-content/uploads/20211110154413/getplacedseries1thumbnail.png"
-                            alt="click here"
-                            onclick="myImageFunction(this)">
-                            </div>*@
 
-                        @*  <div class="image-container">
-                            <img id="img-Box" src="https://media.geeksforgeeks.org/wp-content/uploads/20211110154408/DSwithCPPWorkshopthumbnail.png"
-                            alt="click here">
-                            </div>
-                            </div>*@
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-            <MatH5>tincidunt vitae</MatH5>
-            <p>SHIRTS</p>
-            <p style="margin:0">
-                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
-                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
-                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
-                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
-                <MatIcon Icon="star" style="@colorStarStyle"></MatIcon>
-            </p>
-            <MatSubtitle2 class="demo-mat-card-clean-margin">
-                $ 00000,00
-            </MatSubtitle2>
-            <p>sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum varius sit amet mattis vulputate enim nulla aliquet porttitor lacus luctus accumsan tortor posuere ac ut consequat semper viverra nam libero justo laoreet sit amet cursus sit amet dictum sit amet justo donec enim diam vulputate ut pharetra sit amet aliquam id diam maecenas ultricies mi eget mauris pharetra et ultrices neque ornare aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo nec ultrices dui sapien eget mi proin sed libero enim sed faucibus turpis in eu mi bibendum neque</p>
-            <div class="table-responsive">
-                <table class="table table-sm table-borderless mb-0">
-                    <tbody>
-                        <tr>
-                            <th class="pl-0 w-25" scope="row"><strong>Model</strong></th>
-                            <td>Shirt 5407X</td>
-                        </tr>
-                        <tr>
-                            <th class="pl-0 w-25" scope="row"><strong>Color</strong></th>
-                            <td>Blue</td>
-                        </tr>
-                        <tr>
-                            <th class="pl-0 w-25" scope="row"><strong>Delivery</strong></th>
-                            <td>USA, Europe</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <hr/>
-            <div class="table-responsive mb-2">
-                <table class="table table-sm table-borderless">
-                    <tbody>
-                        <tr>
-                            <td class="pl-0 pb-0 w-25">Quantity</td>
-                            <td class="pb-0">Select size</td>
-                        </tr>
-                        <tr>
-                            <td class="pl-0">
-                                <MatNumericUpDownField Label="MIN"
-                                                       @bind-Value=@testingCurrency
-                                                       FieldType="MatNumericUpDownFieldType.Currency"
-                                                       DecimalPlaces=2
-                                                       Style="width:200px">
-                                </MatNumericUpDownField>
-                            </td>
-                            <td>
-                                <div class="mt-1">
-                                    <MatRadioGroup TValue="string">
-                                        <MatRadioButton TValue="string">Small</MatRadioButton>
-                                        <MatRadioButton TValue="string">Medium</MatRadioButton>
-                                        <MatRadioButton TValue="string">Large</MatRadioButton>
-                                    </MatRadioGroup>
+<MudGrid Class="d-flex justify-center">
+    <MudItem sm="12" md="11">
+        @if (product == null)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+        }
+        else
+        {
+            <MudGrid>
+                <MudItem sm="12" md="3">
+                    <MudGrid>
+                        <MudItem xs="12" Class="image-container">
+                            <figure class="main-img" style="min-height:250px">
+                                <MudImage id="img-Box"
+                                      Class="rounded-lg"
+                                      Src="@product.Image"
+                                      Fluid="true"
+                                      ObjectFit="ObjectFit.Cover"
+                                      ObjectPosition="ObjectPosition.Center"
+                                      onpointerenter="showImage()" onpointerleave="hideImage()" />
+                            </figure>
+                        </MudItem>
+                        <MudItem xs="12">
+                            @foreach (var img in product.OtherImages)
+                            {
+                                <MudImage Src="@img"
+                                  ObjectFit="ObjectFit.Cover"
+                                  ObjectPosition="ObjectPosition.Center"
+                                  Fluid="true"
+                                  Style="max-width: 72px !important"
+                                  onclick="myImageFunction(this)" Class="rounded-lg img-thumbnail rounded float-left" alt="..." />
+                            }
+                            @*<MudImage Src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg"
+                                ObjectFit="ObjectFit.Cover"
+                                ObjectPosition="ObjectPosition.Center"
+                                Fluid="true"
+                                Style="max-width: 72px !important"
+                                onclick="myImageFunction(this)" Class="rounded-lg img-thumbnail rounded float-left" alt="..." />
+                                <MudImage Src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/13a.jpg"
+                                ObjectFit="ObjectFit.Cover"
+                                ObjectPosition="ObjectPosition.Center"
+                                Fluid="true"
+                                Style="max-width: 72px !important"
+                                onclick="myImageFunction(this)" Class="rounded-lg img-thumbnail rounded float-left" alt="..." />
+                                <MudImage Src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/14a.jpg"
+                                ObjectFit="ObjectFit.Cover"
+                                ObjectPosition="ObjectPosition.Center"
+                                Fluid="true"
+                                Style="max-width: 72px !important"
+                                onclick="myImageFunction(this)" Class="rounded-lg img-thumbnail rounded float-left" alt="..." />
+                                <MudImage Src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/15a.jpg"
+                                ObjectFit="ObjectFit.Cover"
+                                ObjectPosition="ObjectPosition.Center"
+                                Fluid="true"
+                                Style="max-width: 72px !important"
+                                onclick="myImageFunction(this)" Class="rounded-lg img-thumbnail rounded float-left" alt="..." />*@
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+                <MudItem sm="12" md="9">
+                    <MudStack class="mud-width-full">
+                        <MudText Typo="Typo.h4">@product.Name</MudText>
+                        <MudText Typo="Typo.caption">@product.Category.Category</MudText>
+                        <p>
+                            <MudRating Size="Size.Small" ReadOnly="true" SelectedValue="@(int.Parse(product.Score!= string.Empty?product.Score:"0"))" /> <MudLink Href="#" Typo="Typo.body2" Underline="Underline.Always"><MudIcon Icon="@Icons.Filled.MarkChatUnread" Size="Size.Small" class="mx-2" />Read review (1)</MudLink> <MudLink Href="javascript: void(0);" @onclick="@(e => visible = true)" Typo="Typo.body2" Underline="Underline.Always"><MudIcon Icon="@Icons.Filled.EditNote" Size="Size.Small" class="mx-2" />Write a review</MudLink>
+                        </p>
+                        <MudText Typo="Typo.h5">$@(product.Price.ToString())</MudText>
+                        <MudDivider Class="my-2" />
+                        <div class="d-flex flex-row">
+                            <MudNumericField Value="0" Label="Quantity:" Variant="Variant.Text" Min="0" Max="10" class="pr-2" Style="width: 300px" />
+                        </div>
+                        <div class="d-flex flex-row">
+                            <MudFab Size="Size.Small" class="ma-1" Color="Color.Primary" Label="Buy Now" />
+                            <MudFab Size="Size.Small" class="ma-1" Color="Color.Default" StartIcon="@Icons.Material.Filled.ShoppingCart" Label="Add Cart" />
+                            <MudFab Size="Size.Small" class="ma-1" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Favorite" Label="1233132" />
+                            <MudFab Size="Size.Small" class="ma-1" Color="Color.Dark" StartIcon="@Icons.Filled.Share" Label="Shared" />
+                        </div>
+                    </MudStack>
+                </MudItem>
+
+                <MudItem sm="12">
+                    <style>
+                        .mud-tab {
+                            min-width: unset;
+                        }
+                    </style>
+                    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6"
+                         Centered="true">
+                        <MudTabPanel Text="Information">
+                            <MudStack class="mud-width-full">
+                                @foreach (var description in product.Description)
+                                {
+                                    <MudText Typo="Typo.body1" Align="Align.Justify">@description</MudText>
+                                }
+                                <MudDivider Class="my-2" />
+
+                                <div class="mud-table-container">
+                                    <table class="mud-table-root">
+                                        <tbody class="mud-table-body">
+                                            @foreach (var specification in product.Specifications)
+                                            {
+                                                <tr class="mud-table-row">
+                                                    <th class="mud-table-cell"><strong>@specification.Description</strong></th>
+                                                    <td class="mud-table-cell">@specification.Value</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-        </div>
-        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-        <MatTabGroup>
-            <MatTab Label="Description">
-                First Content
-            </MatTab>
-            <MatTab Label="Information">
-                Second Content
-            </MatTab>
-           <MatTab Label="Reviews (1)">
-                Third Content
-            </MatTab> 
-        </MatTabGroup>
-        </div>
-        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-        </div>
-    </div>
-</div>
+                            </MudStack>
+                        </MudTabPanel>
+                        <MudTabPanel Text="Reviews">
+                            <MudStack Class="pa-4">
+                                @if (product.Reviews == null)
+                                {
+                                    <MudText Typo="Typo.h5" Style="text-decoration:solid;">There are no ratings.</MudText>
+
+                                }
+                                else
+                                {
+                                    @foreach (var review in pagerProductReview.GetItemsByPage())
+                                    {
+                                        <Review id="@review.Id" userName="@review.UserName" date="@review.CreatedAt" rating="@review.Value" review="@review.Review" />
+                                    }
+                                    @if (pagerProductReview.Items.Count() > pagerProductReview.PageSize)
+                                    {
+                                        <div class="d-flex align-center justify-space-between">
+                                            <MudText Typo="Typo.caption" Class="pl-2">Results:@pagerProductReview.GetStartItems() - @pagerProductReview.GetEndItems() of @pagerProductReview.Items.Count() Items </MudText>
+
+
+                                            <MudPagination BoundaryCount="0" MiddleCount="0" Count="@pagerProductReview.GetTotalPages()" @bind-Selected="pagerProductReview.Page"
+                                               ShowFirstButton="true" ShowLastButton="true" ShowNextButton="true" ShowPreviousButton="true"
+                                               Variant="Variant.Text" />
+                                        </div>
+                                    }
+                                }
+                            </MudStack>
+                        </MudTabPanel>
+                    </MudTabs>
+                </MudItem>
+            </MudGrid>
+            <MudGrid>
+            </MudGrid>
+        }
+    </MudItem>
+</MudGrid>
+<MudDialog @bind-IsVisible="visible" Options="dialogOptions">
+    <TitleContent>
+        <MudText Typo="Typo.h5">
+            <MudIcon Icon="@Icons.Filled.Newspaper" Class="mr-3" /> New review
+        </MudText>
+        <MudText Typo="Typo.caption" Color="Color.Info">Your email address will not be published.</MudText>
+    </TitleContent>
+    <DialogContent>
+        <ReviewForm />
+    </DialogContent>
+</MudDialog>
 
 @code {
+
+    #region component parameters
+    [Parameter]
+    public long Code { get; set; }
     [CascadingParameter]
     public MainLayout mainLayout { get; set; }
+    [CascadingParameter]
+    public Error Error { get; set; }
+    #endregion
 
-    protected override void OnInitialized()
+
+    #region component properties
+    protected bool visible;
+    protected DialogOptions dialogOptions = new() { FullWidth = true };
+    protected ProductResponse product { get; set; } = null;
+    protected Pager<ProductReviewResponse> pagerProductReview;
+    #endregion
+
+    #region component events
+    protected override async Task OnInitializedAsync()
     {
-        mainLayout.Title = "Product";
+        try
+        {
+            mainLayout.Title = "Product";
+            product = await GetProduct();
+            pagerProductReview = new Pager<ProductReviewResponse>()
+                {
+                    Page = 1,
+                    PageSize = 10,
+                    Items = product.Reviews == null ? Enumerable.Empty<ProductReviewResponse>() : product.Reviews
+                };
+        }
+        catch (Exception ex)
+        {
+            Error.ProcessError(ex);
+        }
     }
+    protected void OpenDialog(MouseEventArgs e) => visible = true;
+    protected void Submit() => visible = false;
+    #endregion
 
-    [Parameter]
-    public int? id { get; set; }
+    #region component Methos
+    protected async Task<ProductResponse> GetProduct()
+    {
+        var request = new ProductRequest() { ProductCode = Code };
 
-    string colorStarStyle = $"color:{MatThemeColors.Orange._500.Value};";
-
-    decimal testingCurrency = 0m;
+        var data = await service.GetProduct(request);
+        return data.Response;
+    }
+    #endregion
 }

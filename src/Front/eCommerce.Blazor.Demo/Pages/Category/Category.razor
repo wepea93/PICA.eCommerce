@@ -1,0 +1,155 @@
+﻿@layout MainLayout
+@page "/Categories"
+@page "/Providers/{category:int}"
+@inject IDialogService Dialog
+@inject ProductService service
+
+<PageTitle>@mainLayout.Title</PageTitle>
+
+<MudGrid Class="d-flex justify-center">
+    <MudItem sm="12" md="11">
+        @if (categories == null && providers == null)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+        }
+        else
+        {
+            <MudGrid Spacing="4">
+                @if (isCategories)
+                {
+                    @foreach (var category in pagerCategories.GetItemsByPage())
+                    {
+                        <MudItem sm="2" md="4">
+                            <MudPaper Style="@($"background: url('{@category.Image.Replace("\r\n","")}') no-repeat center center !important; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;  position: relative; font-weight: 500;")" Height="200px">
+                                <MudOverlay Visible="true" DarkBackground="true" Absolute="true">
+                                    <MudText Typo="Typo.h5" Style="color:white;" Align="Align.Center">@category.Category</MudText>
+                                </MudOverlay>
+                            </MudPaper>
+                        </MudItem>
+                    }
+
+                    @if (pagerCategories.Items.Count() > pagerCategories.PageSize)
+                    {
+                        <MudItem sm="12">
+                            <div class="d-flex align-center justify-space-between">
+                                <MudText Typo="Typo.caption" Class="pl-2">Results:@pagerCategories.GetStartItems() - @pagerCategories.GetEndItems() of @pagerCategories.Items.Count() Items </MudText>
+
+
+                                <MudPagination BoundaryCount="0" MiddleCount="0" Count="@pagerCategories.GetTotalPages()" @bind-Selected="pagerCategories.Page"
+                                   ShowFirstButton="true" ShowLastButton="true" ShowNextButton="true" ShowPreviousButton="true"
+                                   Variant="Variant.Text" />
+                            </div>
+                        </MudItem>
+                    }
+                }
+                else
+                {
+
+                    @foreach (var provider in pagerProviders.GetItemsByPage())
+                    {
+                        <MudItem sm="2" md="4">
+                            <MudPaper Style="@($"position: relative; font-weight: 500;")" Height="200px">
+                                <MudOverlay Visible="true" DarkBackground="true" Absolute="true">
+                                    <MudText Typo="Typo.h5" Style="color:white;" Align="Align.Center">@provider.Provider</MudText>
+                                </MudOverlay>
+                            </MudPaper>
+                        </MudItem>
+                        @*<Review id="@review.Id" userName="@review.UserName" date="@review.CreatedAt" rating="@review.Value" review="@review.Review" />*@
+                    }
+
+                    @if (pagerProviders.Items.Count() > pagerProviders.PageSize)
+                    {
+                        <MudItem sm="12">
+                            <div class="d-flex align-center justify-space-between">
+                                <MudText Typo="Typo.caption" Class="pl-2">Results:@pagerProviders.GetStartItems() - @pagerProviders.GetEndItems() of @pagerProviders.Items.Count() Items </MudText>
+
+
+                                <MudPagination BoundaryCount="0" MiddleCount="0" Count="@pagerProviders.GetTotalPages()" @bind-Selected="pagerProviders.Page"
+                                   ShowFirstButton="true" ShowLastButton="true" ShowNextButton="true" ShowPreviousButton="true"
+                                   Variant="Variant.Text" />
+                            </div>
+                        </MudItem>
+                    }
+                }
+            </MudGrid>
+        }
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    #region component parameters
+    [Parameter]
+    public int category { get; set; }
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+    #endregion
+
+
+    #region component properties
+    protected IEnumerable<ProductCategoryResponse> categories { get; set; } = null;
+    protected Pager<ProductCategoryResponse> pagerCategories;
+    protected IEnumerable<ProductProviderResponse> providers { get; set; } = null;
+    protected Pager<ProductProviderResponse> pagerProviders;
+    protected bool isCategories { get => category == 0; }
+    #endregion
+
+    #region component events
+    protected override async Task OnInitializedAsync()
+    {
+        if (isCategories)
+        {
+            mainLayout.Title = "Categories";
+            categories = await GetCategories();
+            pagerCategories = new Pager<ProductCategoryResponse>()
+                {
+                    Page = 1,
+                    PageSize = 12,
+                    Items = categories
+                };
+        }
+        else
+        {
+            mainLayout.Title = "Providers";
+            providers = await GetProviders(category);
+            pagerProviders = new Pager<ProductProviderResponse>()
+                {
+                    Page = 1,
+                    PageSize = 12,
+                    Items = providers
+                };
+        }
+
+    }
+    #endregion
+
+    #region component Methos
+    protected async Task<IEnumerable<ProductCategoryResponse>> GetCategories()
+    {
+        var data = await service.GetProductCategories(new ProductCategoryRequest { ProviderRequired = false });
+        return data.Response;
+        //if (data.Message == "Successful")
+        //{
+        //    return data.GetResponse<IEnumerable<ProductCategoryResponse>>();
+        //}
+        //else
+        //{
+        //    return Enumerable.Empty<ProductCategoryResponse>();
+        //}
+    }
+
+    protected async Task<IEnumerable<ProductProviderResponse>> GetProviders(int ProductCategoryId)
+    {
+        var data = await service.GetProductProviders(new ProductProviderRequest() { ProductCategoryId = ProductCategoryId });
+        return data.Response;
+        //if (data.Message == "Successful")
+        //{
+        //    return data.GetResponse<IEnumerable<ProductProviderResponse>>();
+        //}
+        //else
+        //{
+        //    return Enumerable.Empty<ProductProviderResponse>();
+        //}
+    }
+    #endregion
+}

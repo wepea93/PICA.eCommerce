@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Exceptions\**" />
+    <Compile Remove="HealthChecks\**" />
+    <Compile Remove="Objects\Request\**" />
+    <Compile Remove="Objects\Responses\**" />
+    <Compile Remove="Utilities\**" />
+    <Compile Remove="Validations\**" />
+    <EmbeddedResource Remove="Exceptions\**" />
+    <EmbeddedResource Remove="HealthChecks\**" />
+    <EmbeddedResource Remove="Objects\Request\**" />
+    <EmbeddedResource Remove="Objects\Responses\**" />
+    <EmbeddedResource Remove="Utilities\**" />
+    <EmbeddedResource Remove="Validations\**" />
+    <None Remove="Exceptions\**" />
+    <None Remove="HealthChecks\**" />
+    <None Remove="Objects\Request\**" />
+    <None Remove="Objects\Responses\**" />
+    <None Remove="Utilities\**" />
+    <None Remove="Validations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="6.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="RestSharp" Version="107.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Commons\eCommerce.Commons\eCommerce.Commons.csproj" />
+  </ItemGroup>
+
+</Project>

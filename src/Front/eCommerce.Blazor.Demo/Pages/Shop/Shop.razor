@@ -1,0 +1,258 @@
+﻿@layout MainLayout
+@page "/Shop"
+@using eCommerce.Services.Exceptions
+@inject ProductService _service
+
+<PageTitle>@mainLayout.Title</PageTitle>
+
+<MudGrid>
+    <MudItem xs="12" sm="3">
+        <FiltersComponent filterCategory="@Category"
+                          filterIsNew="@IsNew"
+                          filterIsRenewed="@IsRenewed"
+                          filterIsUsed="@IsUsed"
+                          filterMaxPrice="@MaxPrice"
+                          filterMinPrice="@MinPrice"
+                          filterProvider="@Provider"
+                          filterScore="@Score"
+                          filterText="@Search"
+                          OnFilterChangeCallback="FiltersComponentCallback_Change" />
+    </MudItem>
+    <MudItem xs="12" sm="9">
+        <MudStack class="mud-width-full pa-4">
+            @if (Products == null)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+            }
+            else if (!ProductsFound)
+            {
+                <NotFound />
+            }
+            else
+            {
+                <div class="d-flex align-center justify-space-between">
+                    <MudToggleIconButton Icon="@Icons.Filled.ViewModule" Color="@Color.Primary" Title="Module"
+                                     ToggledIcon="@Icons.Filled.ViewList" ToggledColor="@Color.Secondary" ToggledTitle="List"
+                                     ToggledChanged="OnToggledChanged"
+                                     Toggled="@isToggle" />
+
+                    <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+                        <MudButton>Show: @ItemsByPage Items by page </MudButton>
+                        <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                            <MudMenuItem OnClick="() => setItemsByPage(3)">3</MudMenuItem>
+                            <MudMenuItem OnClick="() => setItemsByPage(9)">9</MudMenuItem>
+                            <MudMenuItem OnClick="() => setItemsByPage(27)">27</MudMenuItem>
+                            <MudMenuItem OnClick="() => setItemsByPage(81)">81</MudMenuItem>
+                        </MudMenu>
+                    </MudButtonGroup>
+
+                    <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+                        @switch (Sort)
+                        {
+                            case "MaxPrice":
+                                <MudButton StartIcon="@Icons.Sharp.Sort">Sort by: Max Price </MudButton>
+                                break;
+                            case "MinPrice":
+                                <MudButton StartIcon="@Icons.Sharp.Sort">Sort by: Min Price</MudButton>
+                                break;
+                            default:
+                                <MudButton StartIcon="@Icons.Sharp.Sort">Sort by: Relevance</MudButton>
+                                break;
+                        }
+                        <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                            <MudMenuItem OnClick="() => setSort(ProductUtilities.ORDERBY.Relevance)">Relevance</MudMenuItem>
+                            <MudMenuItem OnClick="() => setSort(ProductUtilities.ORDERBY.MinPrice)">MinPrice</MudMenuItem>
+                            <MudMenuItem OnClick="() => setSort(ProductUtilities.ORDERBY.MaxPrice)">MaxPrice</MudMenuItem>
+                        </MudMenu>
+                    </MudButtonGroup>
+                </div>
+                <MudGrid Spacing="4">
+                    @foreach (var p in Products)
+                    {
+                        <MudItem xm="12" sm="@(view == CartUtilities.ViewCard.module?4:12)">
+                            <ProductCard Code="@p.Code" urlImg="@p.Image" Nombre="@p.Name" Precio="@p.Price.ToString("C")" Descripcion="@p.Description.FirstOrDefault()" view="@view" />
+                        </MudItem>
+                    }
+                </MudGrid>
+                <div class="d-flex align-center justify-space-between">
+                    <MudText Typo="Typo.caption" Class="pl-2">@(ProductsFound? $"Results:{paginationInitialItems} - {paginationFinItems}  of  {TotalProducts} Items": "Items not found" )</MudText>
+
+
+                    <MudPagination BoundaryCount="1" MiddleCount="1" Count="@TotalPages"
+                               ShowFirstButton="true" ShowLastButton="true" ShowNextButton="true" ShowPreviousButton="true"
+                               Variant="Variant.Text" SelectedChanged="onPaginationChange"/>
+                </div>
+            }
+        </MudStack>
+    </MudItem>
+</MudGrid>
+
+@code {
+    #region component parameters
+    [Parameter]
+    public int? Category { get; set; } = 1;
+    [Parameter]
+    public int? Provider { get; set; }
+    [Parameter]
+    public string? Search { get; set; }
+    [Parameter]
+    public bool IsNew { get; set; } = true;
+    [Parameter]
+    public bool IsUsed { get; set; }
+    [Parameter]
+    public bool IsRenewed { get; set; }
+    [Parameter]
+    public decimal? MinPrice { get; set; }
+    [Parameter]
+    public decimal? MaxPrice { get; set; }
+    [Parameter]
+    public int Score { get; set; }
+    [Parameter]
+    public int Page { get; set; }
+    [Parameter]
+    public int ItemsByPage { get; set; } = 9;
+    [Parameter]
+    public string Sort { get; set; } = "Relevance";
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+    [CascadingParameter]
+    public Error Error { get; set; }
+
+    #endregion
+
+    #region component properties
+    protected bool ProductsFound { get; set; }
+    protected int Count { get; set; }
+    protected int TotalProducts { get; set; }
+    protected int TotalPages { get; set; }
+    protected bool isToggle { get; set; } = true;
+    protected List<ProductResponse>? Products;
+    protected CartUtilities.ViewCard view { get; set; }
+
+    protected int paginationInitialItems
+    {
+        get
+        {
+            var result = ItemsByPage * (Page - 1);
+            return result <= 0 ? 1 : result;
+        }
+    }
+
+    protected int paginationFinItems
+    {
+        get
+        {
+            var result = (paginationInitialItems == 1 ? 0 : paginationInitialItems);
+            result += Count;
+            return result > TotalProducts ? TotalProducts : result;
+        }
+    }
+    #endregion
+
+    #region component events
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            mainLayout.Title = "Shop";
+            await OnToggledChanged(false);
+            await GetProducts();
+        }
+        catch (Exception ex)
+        {
+            Error.ProcessError(ex);
+        }
+    }
+
+    protected async Task OnToggledChanged(bool toggled)
+    {
+        isToggle = toggled;
+        view = toggled ? CartUtilities.ViewCard.module : CartUtilities.ViewCard.list;
+    }
+
+    protected async Task FiltersComponentCallback_Change(FiltersComponent filtersComponent)
+    {
+        Category = filtersComponent.filterCategory;
+        Provider = filtersComponent.filterProvider;
+        Search = filtersComponent.filterText;
+        IsNew = filtersComponent.filterIsNew;
+        IsUsed = filtersComponent.filterIsUsed;
+        IsRenewed = filtersComponent.filterIsRenewed;
+        MinPrice = filtersComponent.filterMinPrice;
+        MaxPrice = filtersComponent.filterMaxPrice;
+        Score = filtersComponent.filterScore;
+        Page = 0;
+        await GetProducts();
+    }
+    protected async Task onPaginationChange(int page)
+    {
+        Page = page;
+        await GetProducts();
+    }
+
+    private async Task setSort(ProductUtilities.ORDERBY sort)
+    {
+        Sort = sort.ToString();
+        await GetProducts();
+    }
+
+    private async Task setItemsByPage(int itemsByPage)
+    {
+        ItemsByPage = itemsByPage;
+        await GetProducts();
+    }
+    #endregion
+
+    #region component Methos
+    private async Task GetProducts()
+    {
+        try
+        {
+            var request = new ProductCatalogRequest();
+            if (Category.HasValue)
+                request.CategoryId = Category.Value;
+            request.ItemsByPage = ItemsByPage;
+            if (MaxPrice.HasValue)
+                request.MaxPrice = MaxPrice.Value;
+            if (MinPrice.HasValue)
+                request.MinPrice = MinPrice.Value;
+            request.Page = Page;
+            if (Provider.HasValue)
+                request.ProviderId = Provider.Value;
+            request.Search = Search;
+            request.Sort = Sort;
+            List<string> lCondition = new List<string>();
+            if (IsNew)
+            {
+                lCondition.Add(ProductUtilities.CONDITION.New.ToString());
+            }
+            if (IsUsed)
+            {
+                lCondition.Add(ProductUtilities.CONDITION.Used.ToString());
+            }
+            if (IsRenewed)
+            {
+                lCondition.Add(ProductUtilities.CONDITION.Returned.ToString());
+            }
+
+            request.Condition = string.Join(',', lCondition);
+
+            var Response = await _service.GetProductCatalog(request);
+            ProductsFound = Response.Response.ProductsFound;
+            Count = Response.Response.Count;
+            TotalProducts = Response.Response.TotalProducts;
+            TotalPages = Response.Response.TotalPages;
+            Products = Response.Response.Products.ToList();
+        }
+        catch
+        {
+            ProductsFound = false;
+            Count = 0;
+            TotalProducts = 0;
+            TotalPages = 0;
+            Products = Enumerable.Empty<ProductResponse>().ToList();            
+            throw;
+        }
+    }
+    #endregion
+}

@@ -3,6 +3,7 @@
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
+<BlazoredToasts />
 
 <MudLayout>
     <MudAppBar Elevation="0" Dense="true" Fixed="true" Class="navbar navbar-transparent">
@@ -25,7 +26,7 @@
         <MudPaper Class="d-flex align-content-center justify-center align-center flex-grow-1 gap-4"
                   style="background-image: url('https://mdbootstrap.com/img/Photos/Others/clothes(4)-crop.jpg'); height: 400px; position:relative;">
             <MudOverlay Visible="true" DarkBackground="true" Absolute="true" AutoClose="false" />
-            <MudText Typo="Typo.h2" Style="font-weight: 500; color:#fff; z-index:7" class="text-white">Shoping<!--@Title--></MudText>
+            <MudText Typo="Typo.h2" Style="font-weight: 500; color:#fff; z-index:7" class="text-white">@Title</MudText>
         </MudPaper>
         <div class="px-16 py-4">
             <CascadingValue Value="this">@Body</CascadingValue>

@@ -1,0 +1,26 @@
+﻿<MudPaper Class="pa-4">
+    <MudStack Row="true" class="align-start  flex-grow-1">
+        <MudAvatar Image="https://docs.microsoft.com/windows/uwp/contacts-and-calendar/images/shoulder-tap-static-payload.png" Size="Size.Large" />
+        <MudStack Justify="Justify.Center" Spacing="0" Class="flex-grow-1">
+            <MudText Typo="Typo.caption">@userName</MudText>
+            <MudText Typo="Typo.body1">@date.ToShortDateString()</MudText>
+            <MudText Typo="Typo.body2" Align="Align.Justify">@review</MudText>
+        </MudStack>
+        <MudRating Size="Size.Small" ReadOnly="true" SelectedValue="@rating" />
+    </MudStack>
+</MudPaper>
+
+@code {
+    #region component parameters
+    [Parameter]
+    public long id { get; set; }
+    [Parameter]
+    public string userName { get; set; }
+    [Parameter]
+    public string review { get; set; }
+    [Parameter]
+    public int rating { get; set; }
+    [Parameter]
+    public DateTime date { get; set; }
+    #endregion
+}

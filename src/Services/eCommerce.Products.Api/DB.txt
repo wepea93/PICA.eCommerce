@@ -1,0 +1,3 @@
+Actualizar base de datos:
+
+dotnet ef dbcontext scaffold "Server=LAPTOP-75FB0SQ9\SQLEXPRESS;Database=EcommerceProducts;Trusted_Connection=True;User id=usr_products; password=pruebas123" Microsoft.EntityFrameworkCore.SqlServer -o "Contexts/DbProduct" -c "DbProductsContext" --force

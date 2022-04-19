@@ -1,94 +1,114 @@
 ﻿@layout LoginLayout
 @page "/Register"
 
+<MudStack class="mt-10" Style="width:500px">
+    <MudStack AlignItems="AlignItems.Center" Class="align-center">
+        <MudImage Src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" Width="72" Height="72" Class="d-flex flex-1" />
+        @*<MudText Typo="Typo.h5">Sign up</MudText>*@
+    </MudStack>
 
-<div class="mat-layout-grid-cell mat-layout-grid-cell-span-12 text-center">
-    <form class="form-signin ">
-        <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
-        <MatH4 Class="h3 mb-3 font-weight-normal">Sign up</MatH4>
+    <MudStack Spacing="2" Class="px-14 py-2" AlignItems="AlignItems.Center">
+        <MudStack Row="true">
+            <MudTextField T="string" Label="First Name" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Person" Class="d-flex" />
+            <MudTextField T="string" Label="Last Name" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Person" Class="d-flex" />
+        </MudStack>
+        <MudTextField T="string" Label="Your Email" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Email" Class="d-flex"  FullWidth="true"/>
+        <MudStack Row="true">
+            <MudTextField T="string" Label="Password" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Password" InputType="InputType.Password" Class="d-flex" />
+            <MudTextField T="string" Label="Password retry" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Password" InputType="InputType.Password" Class="d-flex" />
+        </MudStack>
+        <MudCheckBox @bind-Checked="@Label_CheckBox2" Label="Accept termins and conditions" Color="Color.Primary"></MudCheckBox>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" Class="d-flex">Sing up</MudButton>
+    </MudStack>
 
-
-        <div class="container-sm pb-2">
-
-            <div class="form-row">
-                <div class="col">
-                    <div class="md-form md-outline mt-0">
-                        <input type="text" id="materialRegisterFormFirstName" class="form-control">
-                        <label for="materialRegisterFormFirstName">First name</label>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="md-form md-outline mt-0">
-                        <input type="email" id="materialRegisterFormLastName" class="form-control">
-                        <label for="materialRegisterFormLastName">Last name</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="md-form md-outline mt-0">
-                <input type="email" id="defaultForm-email2" class="form-control">
-                <label data-error="wrong" data-success="right" for="defaultForm-email2">Your email</label>
-            </div>
-            <div class="md-form md-outline mt-0">
-                <input type="password" id="defaultForm-pass2" class="form-control">
-                <label data-error="wrong" data-success="right" for="defaultForm-pass2">Your password</label>
-                <small id="materialRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
-                    At least 8 characters and 1 digit
-                </small>
-            </div>
-
-            <div class="md-form md-outline">
-                <input type="number" id="materialRegisterFormPhone" class="form-control" aria-describedby="materialRegisterFormPhoneHelpBlock">
-                <label for="materialRegisterFormPhone">Phone number</label>
-                <small id="materialRegisterFormPhoneHelpBlock" class="form-text text-muted mb-3">
-                    Optional - for two step authentication
-                </small>
-            </div>
-
+    <div Class="d-flex flex-column align-content-center justify-center align-center flex-grow-1 gap-4" Elevation="0">
+        <MudText Typo="Typo.overline">or:</MudText>
+        <div Class="d-flex justify-center flex-grow-1 gap-4" Elevation="0">
+            <MudFab Color="Color.Info" StartIcon="@Icons.Custom.Brands.Facebook" Size="Size.Small" />
+            <MudFab Color="Color.Dark" StartIcon="@Icons.Custom.Brands.GitHub" Size="Size.Small" />
+            <MudFab Color="Color.Error" StartIcon="@Icons.Custom.Brands.Google" Size="Size.Small" />
+            <MudFab Color="Color.Default" StartIcon="@Icons.Custom.Brands.Microsoft" Size="Size.Small" />
         </div>
-        <div class="container-sm pb-2">
-
-            <div class="form-check pl-0 mb-3">
-                <input type="checkbox" class="form-check-input filled-in" id="new1">
-                <label class="form-check-label small text-uppercase card-link-secondary" for="new1">Subscribe to our newsletter</label>
-            </div>
-
-        </div>
-        <div class="container-sm pb-2">
-
-            <button type="submit" class="btn btn-primary mb-4">Sign up</button>
-
-            <p>or sign in with:</p>
-
-            <a type="button" class="btn-floating btn-fb btn-sm mr-1">
-                <i class="bi bi-facebook"></i>
-            </a>
-            <a type="button" class="btn-floating btn-tw btn-sm mr-1">
-                <i class="bi bi-twitter"></i>
-            </a>
-            <a type="button" class="btn-floating btn-li btn-sm mr-1">
-                <i class="bi bi-linkedin"></i>
-            </a>
-            <a type="button" class="btn-floating btn-git btn-sm">
-                <i class="bi bi-github"></i>
-            </a>
-
-        </div>
-
-        @*<label for="inputEmail" class="sr-only">Email address</label>
-            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
-            <label for="inputPassword" class="sr-only">Password</label>
-            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
-            <div class="checkbox mb-3">
-            <label>
-            <input type="checkbox" value="remember-me"> Remember me
-            </label>
-            </div>*@
-        <p class="mt-5 mb-3 text-muted">© @actualAnno</p>
-    </form>
-</div>
+        <MudText Typo="Typo.caption" Class="mt-16">© @actualAnno</MudText>
+    </div>
+</MudStack>
 @code {
-
-    public string MyString2 { get; set; }
+    public bool Label_CheckBox2 { get; set; } = false;
     public int actualAnno { get => DateTime.Now.Year; }
 }
+
+@*<div class="mat-layout-grid-cell mat-layout-grid-cell-span-12 text-center">
+    <form class="form-signin ">
+    <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+    <MatH4 Class="h3 mb-3 font-weight-normal">Sign up</MatH4>
+
+
+    <div class="container-sm pb-2">
+
+    <div class="form-row">
+    <div class="col">
+    <div class="md-form md-outline mt-0">
+    <input type="text" id="materialRegisterFormFirstName" class="form-control">
+    <label for="materialRegisterFormFirstName">First name</label>
+    </div>
+    </div>
+    <div class="col">
+    <div class="md-form md-outline mt-0">
+    <input type="email" id="materialRegisterFormLastName" class="form-control">
+    <label for="materialRegisterFormLastName">Last name</label>
+    </div>
+    </div>
+    </div>
+
+    <div class="md-form md-outline mt-0">
+    <input type="email" id="defaultForm-email2" class="form-control">
+    <label data-error="wrong" data-success="right" for="defaultForm-email2">Your email</label>
+    </div>
+    <div class="md-form md-outline mt-0">
+    <input type="password" id="defaultForm-pass2" class="form-control">
+    <label data-error="wrong" data-success="right" for="defaultForm-pass2">Your password</label>
+    <small id="materialRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+    At least 8 characters and 1 digit
+    </small>
+    </div>
+
+    <div class="md-form md-outline">
+    <input type="number" id="materialRegisterFormPhone" class="form-control" aria-describedby="materialRegisterFormPhoneHelpBlock">
+    <label for="materialRegisterFormPhone">Phone number</label>
+    <small id="materialRegisterFormPhoneHelpBlock" class="form-text text-muted mb-3">
+    Optional - for two step authentication
+    </small>
+    </div>
+
+    </div>
+    <div class="container-sm pb-2">
+
+    <div class="form-check pl-0 mb-3">
+    <input type="checkbox" class="form-check-input filled-in" id="new1">
+    <label class="form-check-label small text-uppercase card-link-secondary" for="new1">Subscribe to our newsletter</label>
+    </div>
+
+    </div>
+    <div class="container-sm pb-2">
+
+    <button type="submit" class="btn btn-primary mb-4">Sign up</button>
+
+    <p>or sign in with:</p>
+
+    <a type="button" class="btn-floating btn-fb btn-sm mr-1">
+    <i class="bi bi-facebook"></i>
+    </a>
+    <a type="button" class="btn-floating btn-tw btn-sm mr-1">
+    <i class="bi bi-twitter"></i>
+    </a>
+    <a type="button" class="btn-floating btn-li btn-sm mr-1">
+    <i class="bi bi-linkedin"></i>
+    </a>
+    <a type="button" class="btn-floating btn-git btn-sm">
+    <i class="bi bi-github"></i>
+    </a>
+
+    </div>
+    <p class="mt-5 mb-3 text-muted">© @actualAnno</p>
+    </form>
+    </div>*@

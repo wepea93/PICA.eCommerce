@@ -1,0 +1,37 @@
+﻿<MudStack>
+    @if (1 == 1)
+    {
+        <MudPaper Class="pa-2">
+            <MudStack Row="true">
+                <MudAvatar Image="https://docs.microsoft.com/windows/uwp/contacts-and-calendar/images/shoulder-tap-static-payload.png" Size="Size.Large" />
+                <MudStack Justify="Justify.Center" Spacing="0">
+                    <MudText Typo="Typo.body1">Mony Larsson</MudText>
+                    <MudText Typo="Typo.body2">onebiteonekill@mony.dog</MudText>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    }
+    else
+    {
+        <MudPaper Class="pa-2">
+            <MudStack Spacing="4">
+                <MudTextField T="string" Label="Name" />
+                <MudTextField T="string" Label="Email" />
+            </MudStack>
+        </MudPaper>
+    }
+    <MudPaper Class="pa-2">
+        <MudStack Spacing="4">
+            <MudStack Row="true" AlignItems="AlignItems.End">
+                <MudTextField T="string" Label="Subject" Class="pl-2" />
+                <MudRating Size="Size.Large" Class="pr-2"/>
+            </MudStack>
+            <MudTextField T="string" Label="Your review" Lines="5" />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true">Add a review</MudButton>
+        </MudStack>
+    </MudPaper>
+</MudStack>
+
+@code {
+
+}

@@ -75,11 +75,13 @@ a, .btn-link {
     }
 
     .navbar-transparent .top-nav-collapse {
-        background-color: var(--mud-palette-appbar-background);
+        background-color: var(--mud-palette-primary);
     }
-
+.blazored-toast-container{
+    z-index:10 !important;
+}
 @media only screen and (max-width: 900px) {
     .navbar-transparent:not(.top-nav-collapse) {
-        background-color: var(--mud-palette-appbar-background);
+        background-color: var(--mud-palette-primary);
     }
 }
