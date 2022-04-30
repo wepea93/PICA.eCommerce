@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Products.Core.Contracts.Services;
 using Products.Core.Helpers.Mappers;
 using Products.Core.Objects.Dtos;
+using WebApiProducts.Config;
 
 namespace WebApiAuthorizer.Controllers
 {
-   //[AuthorizationFilter]
+    [AuthorizationFilter]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase

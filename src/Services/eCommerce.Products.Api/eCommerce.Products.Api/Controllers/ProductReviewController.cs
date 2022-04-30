@@ -7,7 +7,7 @@ using WebApiProducts.Config;
 
 namespace WebApiProducts.Controllers
 {
-    //[AuthorizationFilter]
+    [AuthorizationFilter]
     [Route("api/Product/Review")]
     [ApiController]
     public class ProductReviewController : ControllerBase
