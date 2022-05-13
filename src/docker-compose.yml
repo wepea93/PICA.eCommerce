@@ -1,0 +1,101 @@
+#docker-compose up --build --force-recreate
+#docker-compose up db --build --force-recreate
+version: '3.7'
+
+services:
+  db:
+    # user: '0:0'
+    container_name: db_sqlserver2019
+    build: 
+      context: ./BD
+      dockerfile: Dockerfile
+      # args:
+      #   sa_password:  ServiceProducts1234 # politica de MsSqlServer
+      #   accept_uela:  "Y"
+      #   mssql_pid:    "Express"
+    env_file:
+      - ./BD/sqlserver.env
+      - ./secrets.env
+    ports:
+      - 1433:1433
+    restart: always
+    # volumes:
+    #   - type: bind
+    #     source: ./src/DB/mssqldata
+    #     target:  /var/opt/mssql
+    # volumes:
+    #   - ~/src/DB/mssqldata:/var/opt/mssql
+
+    # volumes:
+    #  - mssqldata:/var/opt/mssql:rw
+
+  authorizer:
+    build:
+      context: .
+      dockerfile: Dockerfile.Authorizer.Api
+    container_name: Authorizer.Api
+    env_file:
+      - ./eCommerce.Api.Common.env
+    ports:
+      - 8080:80
+    restart: always
+    depends_on:
+      - db
+
+  notifications:
+    build:
+      context: .
+      dockerfile: Dockerfile.Notifications.Api
+    container_name: Notifications.Api
+    env_file:
+      - ./eCommerce.Api.Common.env
+    ports:
+      - 8081:80
+    restart: always
+    depends_on:
+      - db
+
+  orders:
+    build:
+      context: .
+      dockerfile: Dockerfile.Orders.Api
+    container_name: Orders.Api
+    env_file:
+      - ./eCommerce.Api.Common.env
+    ports:
+      - 8082:80
+    restart: always
+    depends_on:
+      - db
+
+  products:
+    build:
+      context: .
+      dockerfile: Dockerfile.Products.Api
+    container_name: Products.Api
+    env_file:
+      - ./eCommerce.Api.Common.env
+    ports:
+      - 8083:80
+    restart: always
+    depends_on:
+      - db
+
+  shoppingcart:
+    build:
+      context: .
+      dockerfile: Dockerfile.ShoppingCart.Api
+    container_name: ShoppingCart.Api
+    env_file:
+      - ./eCommerce.Api.Common.env
+    ports:
+      - 8084:80
+    restart: always
+    depends_on:
+      - db
+
+# volumes:
+#   mssqldata:
+
+# dotnet add package Microsoft.AspNetCore.Mvc.NewtonsoftJson --version 6.0.4
+# dotnet add package Newtonsoft.Json --version 13.0.1

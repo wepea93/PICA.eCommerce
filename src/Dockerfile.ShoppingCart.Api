@@ -1,0 +1,13 @@
+# docker build -t webapiproducts -f Dockerfile .
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine as build
+WORKDIR /app
+COPY . .
+RUN dotnet restore ./Services/eCommerce.ShoppingCart/eCommerce.ShoppingCart.Api/eCommerce.ShoppingCart.Api.csproj
+RUN dotnet publish ./Services/eCommerce.ShoppingCart/eCommerce.ShoppingCart.Api/eCommerce.ShoppingCart.Api.csproj -o /app/published-app
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine as runtime
+EXPOSE 80
+WORKDIR /app
+COPY --from=build /app/published-app /app
+ENTRYPOINT ["dotnet", "eCommerce.ShoppingCart.Api.dll"]
