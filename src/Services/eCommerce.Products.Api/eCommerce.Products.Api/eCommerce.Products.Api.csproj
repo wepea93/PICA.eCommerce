@@ -10,6 +10,7 @@
   <ItemGroup>
     <Compile Remove="Config\AddAuthHeaderOperationFilter.cs" />
     <Compile Remove="Config\AddRequiredHeaderParameter .cs" />
+    <Compile Remove="Config\AuthorizationFilter .cs" />
     <Compile Remove="Config\AuthorizeAttribute.cs" />
     <Compile Remove="Config\JwtAuthenticationOptions.cs" />
     <Compile Remove="Config\SecurityRequirementsOperationFilter.cs" />

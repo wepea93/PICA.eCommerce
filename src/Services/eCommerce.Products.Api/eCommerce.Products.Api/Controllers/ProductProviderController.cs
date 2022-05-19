@@ -1,6 +1,7 @@
 ﻿using eCommerce.Commons.Objects.Requests.Products;
 using eCommerce.Commons.Objects.Responses;
 using eCommerce.Commons.Objects.Responses.Products;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Products.Core.Contracts.Services;
 using WebApiProducts.Config;
@@ -25,6 +26,8 @@ namespace WebApiProducts.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
+        //[Authorize]
+        //  [Authorize("read:provider")]
         public ActionResult<IEnumerable<ProductProviderResponse>> GetProductProviders([FromQuery] ProductProviderRequest request)
         {
             var result = _productService.GetProductProviders(request.ProductCategoryId);

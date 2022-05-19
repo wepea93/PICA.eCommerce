@@ -31,7 +31,7 @@ namespace WebApiAuthorizer.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [AllowAnonymous]
+        //[Authorize("read:shopppingCart")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<ShoppingCartResponse>>>> Get([FromQuery] GetShoppingCartRequest request)
         {
             var result = await _shoppingCartService.GetShoppingCartByUserId(request.CustomerId);
@@ -45,7 +45,7 @@ namespace WebApiAuthorizer.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [AllowAnonymous]
+        //[Authorize("create:shopppingCart")]
         public async Task<ActionResult<ServiceResponse<bool>>> Post([FromBody] CreateShoppingCartRequest request)
         {
             var shoppingCartList = request.ShoppingCartItems.Select(x => new ShoppingCartDto(x.CustomerId, x.ProductId, x.Price, x.Quantity));
@@ -59,7 +59,7 @@ namespace WebApiAuthorizer.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPut]
-        [AllowAnonymous]
+        //[Authorize("update:shopppingCart")]
         public async Task<ActionResult<ServiceResponse<bool>>> Put([FromBody] UpdateShoppingCartRequest request)
         {
             var shoppingCart = new ShoppingCartDto(request.CustomerId, request.ProductId, request.Quantity);
@@ -73,7 +73,7 @@ namespace WebApiAuthorizer.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpDelete]
-        [AllowAnonymous]
+        //[Authorize("delete:shopppingCart")]
         public async Task<ActionResult<ServiceResponse<bool>>> Delete([FromBody] DeleteShoppingCartRequest request)
         {
 

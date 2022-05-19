@@ -1,5 +1,6 @@
 ﻿using eCommerce.Commons.Objects.Requests.Products;
 using eCommerce.Commons.Objects.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Products.Core.Contracts.Services;
 using Products.Core.Objects.Dtos;
@@ -25,6 +26,8 @@ namespace WebApiProducts.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
+     //   [Authorize("create:review")]
         public async Task<ActionResult<ServiceResponse<bool>>> CreateProductReview(ProductReviewRequest request)
         {
             var productReview = new ProductReviewDto(request.ProductCode, request.UserId, request.UserName, request.Review, request.Value);

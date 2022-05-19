@@ -1,32 +1,33 @@
-﻿using eCommerce.Orders.Core.Contracts.Repositories;
+﻿using eCommerce.Commons.Objects.Messaging;
+using eCommerce.Orders.Core.Config;
+using eCommerce.Orders.Core.Contracts.Repositories;
 using eCommerce.Orders.Core.Contracts.Services;
 using eCommerce.Orders.Core.Helpers.Mappers;
 using eCommerce.Orders.Core.Objects.Dtos;
+using eCommerce.Orders.Core.Publisher;
 using eCommerce.Orders.Infraestructure.Models.UnitOfWorks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using eCommerce.PublisherSubscriber.Object;
 
 namespace eCommerce.Orders.Infraestructure.Services
 {
     public class OrderService : IOrderService
     {
-        private IOrderRepository _orderRepository;
-        private IUnitOfWork _unitOfWork;
-        private IMapperHelper _mapper;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapperHelper _mapper;
+        private readonly PublisherOrderMsg _publisherOrderMsg;
 
-        public OrderService(IOrderRepository orderRepository, IUnitOfWork unitOfWork,IMapperHelper mapperHelper)
+        public OrderService(IOrderRepository orderRepository, IUnitOfWork unitOfWork,IMapperHelper mapperHelper, 
+            PublisherOrderMsg publisherOrderMsg)
         {
             _orderRepository = orderRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapperHelper;
+            _publisherOrderMsg = publisherOrderMsg;
         }
 
         public async Task<bool> Create(OrderDto Order)
         {
-
             var orderDetailEntity = new List<Core.Objects.DbTypes.OrderDetailEntity>();
             foreach (var item in Order.OrderDetail)
             {
@@ -35,6 +36,17 @@ namespace eCommerce.Orders.Infraestructure.Services
             var orderEntity = new Core.Objects.DbTypes.OrderEntity(Order.OrderID, Order.OrderDate, Order.DateRequiered, Order.Comment, Order.Customer, "1");
             var result = await _orderRepository.CreateOrder(orderEntity,orderDetailEntity);
             await _unitOfWork.ConfirmAsync();
+
+            if (result) 
+            {
+                var orderMsg = new OrderMsg()
+                { 
+                    UserId = Order.Customer,
+                    Products = Order.OrderDetail.Select(x=> new ProductMsg(Convert.ToInt64(x.ProductID)))
+                };
+                var message = new Message<OrderMsg>(DateTime.Now, orderMsg);
+                _publisherOrderMsg.DistributeMessage(message, AppConfiguration.Configuration["AppConfiguration:OrderExchangeName"].ToString());
+            }
             return result;
         }
         public async Task<IList<OrderSearchDto>> GetOrderByIdOrCustomer(string ID, string customer)

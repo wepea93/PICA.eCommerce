@@ -1,6 +1,7 @@
 ﻿using eCommerce.Commons.Objects.Requests.Products;
 using eCommerce.Commons.Objects.Responses;
 using eCommerce.Commons.Objects.Responses.Products;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Products.Core.Contracts.Services;
 using WebApiProducts.Config;
@@ -26,6 +27,9 @@ namespace WebApiProducts.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
+        //[Authorize]
+        //  [Authorize(Roles = "Customer")]
+        //  [Authorize("read:categories")]
         public ActionResult<ServiceResponse<IEnumerable<ProductCategoryResponse>>> GetProductCategories([FromQuery] ProductCategoryRequest request)
         {
             var result =  _productService.GetProductCategories(request.ProviderRequired);

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Commons\eCommerce.Commons\eCommerce.Commons.csproj" />
+    <ProjectReference Include="..\..\..\Commons\eCommerce.PublisherSubscriber\eCommerce.PublisherSubscriber.csproj" />
   </ItemGroup>
 
 </Project>

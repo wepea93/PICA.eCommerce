@@ -26,10 +26,24 @@ using eCommerce.ShoppingCart.Infraestructure.Contexts;
 using eCommerce.Commons.HealthChecks;
 using eCommerce.Commons.Objects.Responses.HealthCheck;
 using eCommerce.ShoppingCart.Infraestructure.Contexts.DbProduct;
+using eCommerce.ShoppingCart.Core.Consumer;
+using Microsoft.AspNetCore.Authorization;
+using eCommerce.Commons.Security;
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                    .AllowAnyHeader().
+                                        AllowAnyMethod();
+                      });
+});
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
@@ -44,37 +58,37 @@ builder.Services.AddSwaggerGen(c =>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-            },
-            new string[]{}
-        }
-    });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "Use bearer token to authorize (enter into field the word 'Bearer' following by space and JWT)",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-    });
+    //c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    //{
+    //    {
+    //        new OpenApiSecurityScheme
+    //        {
+    //            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+    //        },
+    //        new string[]{}
+    //    }
+    //});
+    //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    //{
+    //    Description = "Use bearer token to authorize (enter into field the word 'Bearer' following by space and JWT)",
+    //    Type = SecuritySchemeType.ApiKey,
+    //    Scheme = "bearer",
+    //    BearerFormat = "JWT",
+    //    Name = "Authorization",
+    //    In = ParameterLocation.Header,
+    //});
 });
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer((options) =>
-{
-    //options.Authority = "https://localhost:5247";
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateLifetime = true,
-        ValidateAudience = false
-    };
-});
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//.AddJwtBearer((options) =>
+//{
+//    //options.Authority = "https://localhost:5247";
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateLifetime = true,
+//        ValidateAudience = false
+//    };
+//});
 
 
 builder.Services.AddMvc()
@@ -117,6 +131,8 @@ builder.Services.AddDbContext<DbShoppingCartWriteContext>(
 builder.Services.AddDbContext<DbProductContext>(
     options => options.UseSqlServer(AppConfiguration.Configuration["AppConfiguration:DataBases:EcommerceProducts:ConnectionString"].ToString()));
 
+//builder.Services.AddHostedService<ConsumerOrderMsg>();
+
 builder.Services.AddScoped<IShoppingCartReadRepository, ShoppingCartReadRepository>();
 builder.Services.AddScoped<IShoppingCartWriteRepository, ShoppingCartWriteRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -140,9 +156,26 @@ builder.Services.AddHealthChecks()
         name: "EcommerceProductContext")
     .AddCheck<MemoryHealthCheck>("Memory");
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.Authority = AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString();
+    options.Audience = AppConfiguration.Configuration["AppConfiguration:Authentication:Audience"].ToString();
+});
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("create:shoppingCart", policy => policy.Requirements.Add(new HasScopeRequirement("create:shoppingCart", AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString())));
+    options.AddPolicy("read:shopppingCart", policy => policy.Requirements.Add(new HasScopeRequirement("read:shopppingCart", AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString())));
+    options.AddPolicy("update:shoppingCart", policy => policy.Requirements.Add(new HasScopeRequirement("update:shoppingCart", AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString())));
+    options.AddPolicy("delete:shoppingCart", policy => policy.Requirements.Add(new HasScopeRequirement("delete:shoppingCart", AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString())));
+});
+builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+
 var app = builder.Build();
 
-//app.MapHealthChecks("/healthz");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -191,6 +224,7 @@ app.UseHealthChecks("/healthz", new HealthCheckOptions
 ILogHelper logHelper = app.Services.GetRequiredService<ILogHelper>();
 app.ConfigureExceptionHandler(logHelper);
 
+app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 

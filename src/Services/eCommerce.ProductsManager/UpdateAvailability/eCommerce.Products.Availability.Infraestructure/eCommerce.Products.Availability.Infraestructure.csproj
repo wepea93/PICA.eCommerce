@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="PublisherConsumer\**" />
+    <EmbeddedResource Remove="PublisherConsumer\**" />
+    <None Remove="PublisherConsumer\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Commons\eCommerce.Commons\eCommerce.Commons.csproj" />
+    <ProjectReference Include="..\..\..\..\Commons\eCommerce.PublisherSubscriber\eCommerce.PublisherSubscriber.csproj" />
+    <ProjectReference Include="..\eCommerce.Products.Availability.Core\eCommerce.Products.Availability.Core.csproj" />
+  </ItemGroup>
+
+</Project>

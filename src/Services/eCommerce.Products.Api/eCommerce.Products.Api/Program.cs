@@ -1,6 +1,7 @@
 using eCommerce.Commons.HealthChecks;
 using eCommerce.Commons.Objects.Responses;
 using eCommerce.Commons.Objects.Responses.HealthCheck;
+using eCommerce.Commons.Security;
 using eCommerce.Products.Infraestructure.Contexts.DbProduct;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -60,37 +61,37 @@ builder.Services.AddSwaggerGen(c=>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-            },
-            new string[]{}
-        }
-    });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "Use bearer token to authorize (enter into field the word 'Bearer' following by space and JWT)",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-    });
+    //c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    //{
+    //    {
+    //        new OpenApiSecurityScheme
+    //        {
+    //            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+    //        },
+    //        new string[]{}
+    //    }
+    //});
+    //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    //{
+    //    Description = "Use bearer token to authorize (enter into field the word 'Bearer' following by space and JWT)",
+    //    Type = SecuritySchemeType.ApiKey,
+    //    Scheme = "bearer",
+    //    BearerFormat = "JWT",
+    //    Name = "Authorization",
+    //    In = ParameterLocation.Header,
+    //});
 });
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer((options) =>
-{
-    //options.Authority = "https://localhost:5247";
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateLifetime = true,
-        ValidateAudience = false
-    };
-});
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//.AddJwtBearer((options) =>
+//{
+//    //options.Authority = "https://localhost:5247";
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateLifetime = true,
+//        ValidateAudience = false
+//    };
+//});
 
 
 builder.Services.AddMvc()
@@ -146,6 +147,26 @@ builder.Services.AddHealthChecks()
         healthQuery: "SELECT 1;",
         name: "SqlServerContext")
     .AddCheck<MemoryHealthCheck>("Memory");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.Authority = AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString();
+    options.Audience = AppConfiguration.Configuration["AppConfiguration:Authentication:Audience"].ToString();
+});
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("create:review", policy => policy.Requirements.Add(new HasScopeRequirement("create:review", AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString())));
+    options.AddPolicy("read:review", policy => policy.Requirements.Add(new HasScopeRequirement("read:review", AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString())));
+    options.AddPolicy("read:products", policy => policy.Requirements.Add(new HasScopeRequirement("read:products", AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString())));
+    options.AddPolicy("read:categories", policy => policy.Requirements.Add(new HasScopeRequirement("read:categories", AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString())));
+    options.AddPolicy("read:provider", policy => policy.Requirements.Add(new HasScopeRequirement("read:provider", AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString())));
+});
+builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+
 
 var app = builder.Build();
 

@@ -30,4 +30,6 @@
     <ProjectReference Include="..\eCommerce.ShoppingCart.Infraestructure\eCommerce.ShoppingCart.Infraestructure.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
 </Project>

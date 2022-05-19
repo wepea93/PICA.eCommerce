@@ -3,57 +3,31 @@
 version: '3.7'
 
 services:
-  db:
-    # user: '0:0'
-    container_name: db_sqlserver2019
-    build: 
-      context: ./BD
-      dockerfile: Dockerfile
-      # args:
-      #   sa_password:  ServiceProducts1234 # politica de MsSqlServer
-      #   accept_uela:  "Y"
-      #   mssql_pid:    "Express"
-    env_file:
-      - ./BD/sqlserver.env
-      - ./secrets.env
-    ports:
-      - 1433:1433
-    restart: always
-    # volumes:
-    #   - type: bind
-    #     source: ./src/DB/mssqldata
-    #     target:  /var/opt/mssql
-    # volumes:
-    #   - ~/src/DB/mssqldata:/var/opt/mssql
+  # db:
+  #   # user: '0:0'
+  #   container_name: db_sqlserver2019
+  #   build: 
+  #     context: ./BD
+  #     dockerfile: Dockerfile
+  #     # args:
+  #     #   sa_password:  ServiceProducts1234 # politica de MsSqlServer
+  #     #   accept_uela:  "Y"
+  #     #   mssql_pid:    "Express"
+  #   env_file:
+  #     - ./BD/sqlserver.env
+  #     - ./secrets.env
+  #   ports:
+  #     - 1433:1433
+  #   restart: always
+  #   # volumes:
+  #   #   - type: bind
+  #   #     source: ./src/DB/mssqldata
+  #   #     target:  /var/opt/mssql
+  #   # volumes:
+  #   #   - ~/src/DB/mssqldata:/var/opt/mssql
 
-    # volumes:
-    #  - mssqldata:/var/opt/mssql:rw
-
-  authorizer:
-    build:
-      context: .
-      dockerfile: Dockerfile.Authorizer.Api
-    container_name: Authorizer.Api
-    env_file:
-      - ./eCommerce.Api.Common.env
-    ports:
-      - 8080:80
-    restart: always
-    depends_on:
-      - db
-
-  notifications:
-    build:
-      context: .
-      dockerfile: Dockerfile.Notifications.Api
-    container_name: Notifications.Api
-    env_file:
-      - ./eCommerce.Api.Common.env
-    ports:
-      - 8081:80
-    restart: always
-    depends_on:
-      - db
+  #   # volumes:
+  #   #  - mssqldata:/var/opt/mssql:rw
 
   orders:
     build:
@@ -65,8 +39,34 @@ services:
     ports:
       - 8082:80
     restart: always
-    depends_on:
-      - db
+    # depends_on:
+    #   - db
+
+  authorizer:
+    build:
+      context: .
+      dockerfile: Dockerfile.Authorizer.Api
+    container_name: Authorizer.Api
+    env_file:
+      - ./eCommerce.Api.Common.env
+    ports:
+      - 8080:80
+    restart: always
+    # depends_on:
+    #   - db
+
+  notifications:
+    build:
+      context: .
+      dockerfile: Dockerfile.Notifications.Api
+    container_name: Notifications.Api
+    env_file:
+      - ./eCommerce.Api.Common.env
+    ports:
+      - 8081:80
+    restart: always
+    # depends_on:
+    #   - db
 
   products:
     build:
@@ -78,8 +78,8 @@ services:
     ports:
       - 8083:80
     restart: always
-    depends_on:
-      - db
+    # depends_on:
+    #   - db
 
   shoppingcart:
     build:

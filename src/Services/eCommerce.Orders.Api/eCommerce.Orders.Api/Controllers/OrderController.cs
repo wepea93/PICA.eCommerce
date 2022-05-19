@@ -25,8 +25,8 @@ namespace eCommerce.Orders.Api.Controllers
             _mapperHelper = mapperHelper;
         }
         [HttpPost]
-        [AllowAnonymous]
         [Route("Create")]
+        [Authorize("create:order")]
         public async Task<ActionResult<ServiceResponse<bool>>> Create([FromBody] OrderRequest request)
         {
             var detailObject = new List<OrderDetailDto>();
@@ -56,6 +56,7 @@ namespace eCommerce.Orders.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("List")]
+        [Authorize("read:order")]
         public async Task<ActionResult<ServiceResponse<OrderResponse>>> GetOrder([FromQuery] OrderSearchRequest request)
         {
             var result = await _orderService.GetOrderByIdOrCustomer(request.OrderID,request.Customer);
@@ -70,11 +71,13 @@ namespace eCommerce.Orders.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("Detail")]
+        [Authorize("read:order")]
         public async Task<ActionResult<ServiceResponse<OrderDetailResponse>>> GetDetailOrder([FromQuery] OrderSearchRequest request)
         {
             var resultDetail = await _orderService.GetOrderDetailById(request.OrderID);
             var response = _mapperHelper.MappToOrderDetailResponse(resultDetail);
             return Ok(new ServiceResponse<IList<OrderDetailResponse>>("Successful", response));
         }
+
     }
 }

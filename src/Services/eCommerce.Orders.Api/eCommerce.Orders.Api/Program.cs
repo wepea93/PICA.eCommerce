@@ -15,7 +15,6 @@ using System.Text;
 using eCommerce.Orders.Core.Config;
 using eCommerce.Orders.Core.Contracts.Repositories;
 using eCommerce.Orders.Core.Contracts.Services;
-using eCommerce.Orders.Core.HealthChecks;
 using eCommerce.Orders.Core.Helpers.BadRequests;
 using eCommerce.Orders.Core.Helpers.Mappers;
 using eCommerce.Orders.Core.Objects.Responses;
@@ -24,6 +23,12 @@ using eCommerce.Orders.Infraestructure.Repositories;
 using eCommerce.Orders.Infraestructure.Services;
 using eCommerce.Orders.Infraestructure.Contexts.DbOrder;
 using eCommerce.Orders.Core.Helpers.Log;
+using eCommerce.Orders.Core.Publisher;
+using eCommerce.Commons.Objects.Messaging;
+using eCommerce.PublisherSubscriber.Contracts;
+using eCommerce.Commons.HealthChecks;
+using Microsoft.AspNetCore.Authorization;
+using eCommerce.Commons.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,37 +47,37 @@ builder.Services.AddSwaggerGen(c =>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-            },
-            new string[]{}
-        }
-    });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "Use bearer token to authorize (enter into field the word 'Bearer' following by space and JWT)",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-    });
+    //c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    //{
+    //    {
+    //        new OpenApiSecurityScheme
+    //        {
+    //            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+    //        },
+    //        new string[]{}
+    //    }
+    //});
+    //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    //{
+    //    Description = "Use bearer token to authorize (enter into field the word 'Bearer' following by space and JWT)",
+    //    Type = SecuritySchemeType.ApiKey,
+    //    Scheme = "bearer",
+    //    BearerFormat = "JWT",
+    //    Name = "Authorization",
+    //    In = ParameterLocation.Header,
+    //});
 });
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer((options) =>
-{
-    //options.Authority = "https://localhost:5247";
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateLifetime = true,
-        ValidateAudience = false
-    };
-});
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//.AddJwtBearer((options) =>
+//{
+//    //options.Authority = "https://localhost:5247";
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateLifetime = true,
+//        ValidateAudience = false
+//    };
+//});
 
 
 builder.Services.AddMvc()
@@ -86,6 +91,8 @@ builder.Services.AddMvc()
         };
     });
 
+#region RegisterLog
+
 var levelSwitch = new LoggingLevelSwitch();
 levelSwitch.MinimumLevel = LogEventLevel.Information;
 
@@ -96,6 +103,7 @@ if (!System.IO.Directory.Exists(basePath))
 var filePath = "[BASEPATH]\\" + "Log-[DATE].txt";
 filePath = filePath.Replace("[BASEPATH]", basePath);
 filePath = filePath.Replace("[DATE]", DateTime.Now.ToString("yyyy-MM-dd"));
+var x=0;
 
 builder.Host.UseSerilog((ctx, lc) => lc
     .MinimumLevel.ControlledBy(levelSwitch)
@@ -105,15 +113,20 @@ builder.Host.UseSerilog((ctx, lc) => lc
         bufferBaseFilename: filePath,
         controlLevelSwitch: levelSwitch));
 
+#endregion
 
 builder.Services.AddDbContext<DbOrderContext>(
     options => options.UseSqlServer(AppConfiguration.Configuration["AppConfiguration:DataBases:DataBase1:ConnectionString"].ToString()));
+
+builder.Services.AddTransient<IPublisher<OrderMsg>, PublisherOrderMsg>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<ILogHelper, LogHelper>();
 builder.Services.AddScoped<IMapperHelper, MapperHelper>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
+#region AddHealthChecks
 
 builder.Services.AddHealthChecks()
     .AddSqlServer(
@@ -122,9 +135,30 @@ builder.Services.AddHealthChecks()
         name: "SqlServerContext")
     .AddCheck<MemoryHealthCheck>("Memory");
 
-var app = builder.Build();
+#endregion HealthChecks
 
-//app.MapHealthChecks("/healthz");
+#region Authentication
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.Authority = AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString();
+    options.Audience = AppConfiguration.Configuration["AppConfiguration:Authentication:Audience"].ToString();
+});
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("create:order", policy => policy.Requirements.Add(new HasScopeRequirement("create:order", AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString())));
+    options.AddPolicy("update:order", policy => policy.Requirements.Add(new HasScopeRequirement("update:order", AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString())));
+    options.AddPolicy("read:order", policy => policy.Requirements.Add(new HasScopeRequirement("read:order", AppConfiguration.Configuration["AppConfiguration:Authentication:Authority"].ToString())));
+});
+builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+
+#endregion
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

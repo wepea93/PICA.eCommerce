@@ -53,7 +53,7 @@ namespace eCommerce.ShoppingCart.Core.Helpers.Mappers
             }
 
             decimal result = (minValue / maxValue) * 100;
-            var strResult = result.ToString("#.#");
+            var strResult = result > 0 ? result.ToString("#.#") : "0";
             return Convert.ToDecimal(strResult);
         }
     }

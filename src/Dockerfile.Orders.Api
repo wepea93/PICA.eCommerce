@@ -10,4 +10,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine as runtime
 EXPOSE 80
 WORKDIR /app
 COPY --from=build /app/published-app /app
-ENTRYPOINT ["dotnet", "eCommerce.Orders.dll"]
+ENTRYPOINT ["dotnet", "eCommerce.Orders.Api.dll"]

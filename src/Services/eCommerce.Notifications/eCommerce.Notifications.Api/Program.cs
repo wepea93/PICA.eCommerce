@@ -23,7 +23,7 @@ using eCommerce.Notifications.Infraestructure.Services;
 using eCommerce.Commons.Objects.Responses;
 using eCommerce.Commons.HealthChecks;
 using eCommerce.Commons.Objects.Responses.HealthCheck;
-using eCommerce.Notifications.Infraestructure.Consumers;
+using eCommerce.Notifications.Core.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,7 +105,7 @@ builder.Host.UseSerilog((ctx, lc) => lc
         bufferBaseFilename: filePath,
         controlLevelSwitch: levelSwitch));
 
-builder.Services.AddHostedService<ConsumerPublishedNotificationMsg>();
+builder.Services.AddHostedService<ConsumerNotificationMsg>();
 
 builder.Services.AddSingleton<ILogHelper, LogHelper>();
 builder.Services.AddScoped<IMapperHelper, MapperHelper>();
