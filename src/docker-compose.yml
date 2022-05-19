@@ -9,11 +9,11 @@ services:
           context: .
           dockerfile: Dockerfile.Nginx
       ports:
-          - 8881:8881
-          - 8882:8882
-          - 8883:8883
-          - 8884:8884
-          - 8885:8885
+          - 8881:8081
+          - 8882:8082
+          - 8883:8083
+          - 8884:8084
+          - 8885:8085
       restart: always
 
   authorizer:
@@ -37,7 +37,7 @@ services:
     ports:
       - 8082:80
     restart: always
-
+    
   orders:
       build:
         context: .
@@ -48,7 +48,6 @@ services:
       ports:
         - 8083:80
       restart: always
-
   products:
     build:
       context: .
@@ -59,7 +58,6 @@ services:
     ports:
       - 8084:80
     restart: always
-    
   shoppingcart:
     build:
       context: .

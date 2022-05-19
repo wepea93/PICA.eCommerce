@@ -1,11 +1,11 @@
 # docker build -t webapiproducts -f Dockerfile .
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine as build
-# Disable the invariant mode (set in base image)
-ENV DOTNET_RUNNING_IN_CONTAINER=true
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-# Install cultures (same approach as Alpine SDK image)
-RUN apk add --no-cache icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib
+# # Disable the invariant mode (set in base image)
+# ENV DOTNET_RUNNING_IN_CONTAINER=true
+# ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+# # Install cultures (same approach as Alpine SDK image)
+# RUN apk add --no-cache icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib
 WORKDIR /app
 COPY . .
 RUN dotnet restore ./Services/eCommerce.AuthorizerUser.Api/eCommerce.AuthorizerUser.Api/eCommerce.AuthorizerUser.Api.csproj
