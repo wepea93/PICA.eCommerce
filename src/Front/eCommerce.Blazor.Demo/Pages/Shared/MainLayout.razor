@@ -1,34 +1,67 @@
 ﻿@inherits LayoutComponentBase
+@*@inject Blazored.LocalStorage.ISyncLocalStorageService _localStorage*@
+@*@inject IAuthProvider loginService*@
+@inject NavigationManager navigate
+@inject ShoppingLocalStorage _ShoppingLocalStorage;
+@inject IConfiguration Configuration
+@inject NavigationManager Navigation
+@inject ShoppingService service
+
 
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 <BlazoredToasts />
+<AuthorizeView />
 
 <MudLayout>
-    <MudAppBar Elevation="0" Dense="true" Fixed="true" Class="navbar navbar-transparent">
+    <MudAppBar Elevation="0" Fixed="true" Class="navbar navbar-transparent">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudText Typo="Typo.h5" Class="ml-3">My eCommerce</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudTooltip Text="Ir al Carro">
+            @if (cart != null && cart.Any())
+            {
+                <MudBadge Dot="true" Overlap="true" Bordered="true" Color="Color.Info">
+                    <MudIconButton Icon="@Icons.Filled.ShoppingCartCheckout" Color="@Color.Inherit" Href="/Cart" />
+                </MudBadge>
+            }
+            else
+            {
+                <MudIconButton Icon="@Icons.Filled.ShoppingCartCheckout" Color="@Color.Inherit" Href="/Cart" />
+            }
+        </MudTooltip>
+        <MudButton Variant="Variant.Filled" DisableElevation="true" Href="/shop" Color="@Color.Inherit" Class="pa-4" Style="color:#fff !important; background: transparent !important;">Store</MudButton>
+        <AccessControl />
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Never" Elevation="1" Variant="DrawerVariant.Temporary">
         <MudDrawerHeader>
             <MudText Typo="Typo.h6">My eCommerce</MudText>
         </MudDrawerHeader>
+
         <MudNavMenu>
-            <MudNavLink Match="NavLinkMatch.All">Store</MudNavLink>
-            <MudNavLink Match="NavLinkMatch.All">Library</MudNavLink>
-            <MudNavLink Match="NavLinkMatch.All">Community</MudNavLink>
+            <MudNavLink Style="background: none !important;" Icon="@Icons.Filled.Store" Href="\" DisableRipple="true">Home</MudNavLink>
+            <MudDivider />
+            <AuthorizeView>
+                <Authorized>
+                    <MudNavLink Style="background: none !important;" Icon="@Icons.Filled.AccountBox">Profile</MudNavLink>
+                    <MudNavLink Style="background: none !important;" Icon="@Icons.Filled.ShoppingCart">Orders</MudNavLink>
+                    <MudNavLink Style="background: none !important;" Icon="@Icons.Filled.History">Order History</MudNavLink>
+                    <MudDivider />
+                </Authorized>
+            </AuthorizeView>
+            <MudNavLink Style="background: none !important;" Icon="@Icons.Filled.Store" Href="\shop">Store</MudNavLink>
+            <MudNavLink Style="background: none !important;" Icon="@Icons.Filled.ContactPage">Contact</MudNavLink>
         </MudNavMenu>
     </MudDrawer>
-    <MudMainContent class="mt-n12">
-        <MudPaper Class="d-flex align-content-center justify-center align-center flex-grow-1 gap-4"
-                  style="background-image: url('https://mdbootstrap.com/img/Photos/Others/clothes(4)-crop.jpg'); height: 400px; position:relative;">
+    <MudMainContent class="mt-n16">
+        <div Class="d-flex align-content-center justify-center align-center"
+             style="background-image: url('https://mdbootstrap.com/img/Photos/Others/clothes(4)-crop.jpg'); height: 400px; position:relative;">
             <MudOverlay Visible="true" DarkBackground="true" Absolute="true" AutoClose="false" />
             <MudText Typo="Typo.h2" Style="font-weight: 500; color:#fff; z-index:7" class="text-white">@Title</MudText>
-        </MudPaper>
+        </div>
         <div class="px-16 py-4">
+
             <CascadingValue Value="this">@Body</CascadingValue>
         </div>
     </MudMainContent>
@@ -36,16 +69,180 @@
 
 @code
 {
+    [CascadingParameter]
+    public Error Error { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    //protected ShoppingLocalStorage _ShoppingLocalStorage;
+    public List<ShoppingCartResponse>? cart { get; set; }
 
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            cart = (await _ShoppingLocalStorage.GetShoppingCart()).ToList();
+            await RefreshShoppingCart();
+        }
+        catch (Exception e)
+        {
+            Error.ProcessError(e);
+        }
+    }
+
+    private async Task onAddCardLocalStorage(ShoppingCartResponse shop)
+    {
+        if (cart.Any(e => e.Product.Code == shop.Product.Code))
+        {
+            cart.FirstOrDefault(e => e.Product.Code == shop.Product.Code).Quantity += shop.Quantity;
+        }
+        else
+        {
+            long key = 1;
+            if (cart.Any())
+            {
+                key = cart.Select(s => s.Id).Max() + 1;
+            }
+            shop.Id = key;
+            if (shop.Price >= 0)
+            {
+                shop.Price = shop.Product.Price;
+            }
+            shop.isNew = true;
+            cart.Add(shop);
+        }
+    }
+
+    public async Task addCard(ShoppingCartResponse shop)
+    {
+        var internalcustomer = await Getcustomer();
+        if (!string.IsNullOrEmpty(internalcustomer))
+        {
+            var result = await service.AddShoppingCart(new CreateShoppingCartRequest
+                {
+                    ShoppingCartItems = new List<CreateShoppingItemCartRequest>
+                    {
+                        new CreateShoppingItemCartRequest
+                        {
+                            CustomerId = internalcustomer,
+                            ProductId = shop.Product.Code,
+                            Price = shop.Price,
+                            Quantity = shop.Quantity
+                        }
+                    }
+                });
+            if (result.Response)
+            {
+                cart = (await GetShoppingCart(internalcustomer)).ToList();
+            }
+        }
+        else
+        {
+            onAddCardLocalStorage(shop);
+        }
+        _ShoppingLocalStorage.SaveShoppingCart(cart);
+    }
+    public async Task removeCard(ShoppingCartResponse shop)
+    {
+
+        var internalcustomer = await Getcustomer();
+        if (!string.IsNullOrEmpty(internalcustomer))
+        {
+            var result = await service.DeleteShoppingCart(new DeleteShoppingCartRequest
+                {
+                    CustomerId = shop.CustomerId ?? internalcustomer,
+                    ProductId = shop.Product.Code
+                });
+
+            if (result.Response)
+            {
+                cart = (await GetShoppingCart(internalcustomer)).ToList();
+            }
+        }
+        else
+        {
+            cart.Remove(shop);
+        }
+        SaveShoppingCartLocalStorage();
+    }
     bool _drawerOpen = false;
+
+    public async Task<IEnumerable<ShoppingCartResponse>> GetShoppingCart(string internalcustomer)
+    {
+        var response = await service.GetShoppingCart(new GetShoppingCartRequest
+            {
+                CustomerId = internalcustomer
+            });
+        return response.Response ?? Enumerable.Empty<ShoppingCartResponse>();
+    }
+
+    protected async Task<IEnumerable<ShoppingCartResponse>> RefreshShoppingCart(string internalcustomer)
+    {
+        bool result = true;
+        if (cart.Any(x => x.isNew))
+        {
+            result = (await service.AddShoppingCart(
+                   new CreateShoppingCartRequest
+                       {
+                           ShoppingCartItems = cart
+                                                                   .Where(x => x.isNew)
+                                                                       .Select(
+                                                                           shop => new CreateShoppingItemCartRequest
+                                                                           {
+                                                                               CustomerId = shop.CustomerId ?? internalcustomer,
+                                                                               ProductId = shop.Product.Code,
+                                                                               Price = shop.Price,
+                                                                               Quantity = shop.Quantity
+                                                                           }
+                                                                       )
+                       }
+                   )).Response;
+        }
+
+        if (cart.Any(x => !x.isUpdate))
+        {
+            foreach (var shop in cart.Where(x => !x.isUpdate))
+            {
+                if (!result)
+                    break;
+
+                result = (await service.UpdateShoppingCart(new UpdateShoppingCartRequest
+                    {
+                        CustomerId = shop.CustomerId ?? internalcustomer,
+                        ProductId = shop.Product.Code,
+                        Quantity = shop.Quantity
+                    }
+                    )).Response;
+            }
+        }
+
+        return await GetShoppingCart(internalcustomer);
+    }
+
+
+    public async Task SaveShoppingCartLocalStorage()
+    {
+        _ShoppingLocalStorage.SaveShoppingCart(cart);
+    }
+
+    public async Task RefreshShoppingCart()
+    {
+        var internalUser = await Getcustomer();
+        if (!string.IsNullOrEmpty(internalUser))
+        {
+            cart = (await RefreshShoppingCart(internalUser)).ToList();
+            SaveShoppingCartLocalStorage();
+        }
+    }
+
 
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
     }
+
     void ScrollChange()
     {
-
         string a = "background: rgb(68, 68, 68); /* IE */ background: rgba(0, 0, 0, 0.78);";
     }
 
@@ -62,5 +259,35 @@
                 StateHasChanged();
             }
         }
+    }
+
+    public async Task<string> Getcustomer()
+    {
+        var user = (await authenticationStateTask).User;
+        if (!user.Identity.IsAuthenticated)
+        {
+            return string.Empty;
+        }
+
+        var result = user.Claims.FirstOrDefault(x => x.Type == "sub").Value.Split('|');
+        return result.Length == 2 ? result[1] : string.Empty;
+
+    }
+
+
+    public async Task LogOut()
+    {
+        var authority = Configuration["Auth0:Authority"];
+        var clientId = Configuration["Auth0:ClientId"];
+        Navigation.NavigateTo($"{authority}/v2/logout?client_id={clientId}");
+        //try
+        //{
+        //    await loginService.Logout();
+        //    navigate.NavigateTo("");
+        //}
+        //catch (Exception e)
+        //{
+        //    Error.ProcessError(e);
+        //}
     }
 }

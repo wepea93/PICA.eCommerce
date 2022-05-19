@@ -1,0 +1,51 @@
+﻿@page "/authentication/{action}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.Extensions.Configuration
+@*@inject IAuthProvider loginService*@
+@inject IAccessTokenProvider TokenProvider 
+@inject NavigationManager Navigation
+@inject IConfiguration Configuration
+
+<RemoteAuthenticatorView Action="@Action">
+    <LogOut>
+        @{
+            Logout();
+        }
+    </LogOut>
+    <LogInFailed>
+        <p>There was an error login you in: @_errorMessage</p>
+    </LogInFailed>
+</RemoteAuthenticatorView>
+
+@code {
+    [Parameter] public string Action { get; set; }
+    string _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var accessTokenResult = await TokenProvider.RequestAccessToken();
+        if (accessTokenResult.TryGetToken(out var token))
+        {
+           var accessToken = token.Value;
+        //   await loginService.Login(accessToken);
+        }
+    }
+    
+    private void Logout()
+    {
+        var authority = Configuration["Auth0:Authority"];
+        var clientId = Configuration["Auth0:ClientId"];
+      //  loginService.Logout();
+        Navigation.NavigateTo($"{authority}/v2/logout?client_id={clientId}");
+    }
+
+    protected override void OnParametersSet()
+    {
+        Uri uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        if(QueryHelpers.ParseQuery(uri.Query).TryGetValue("message",out var message))
+        {
+            _errorMessage = message;
+        }
+    }
+}

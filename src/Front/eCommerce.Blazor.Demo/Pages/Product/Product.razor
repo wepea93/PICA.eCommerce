@@ -4,9 +4,9 @@
 
 @inject IDialogService Dialog
 @inject ProductService service
+@inject NavigationManager navigate
 
 <PageTitle>@mainLayout.Title</PageTitle>
-
 
 <MudGrid Class="d-flex justify-center">
     <MudItem sm="12" md="11">
@@ -40,30 +40,6 @@
                                   Style="max-width: 72px !important"
                                   onclick="myImageFunction(this)" Class="rounded-lg img-thumbnail rounded float-left" alt="..." />
                             }
-                            @*<MudImage Src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg"
-                                ObjectFit="ObjectFit.Cover"
-                                ObjectPosition="ObjectPosition.Center"
-                                Fluid="true"
-                                Style="max-width: 72px !important"
-                                onclick="myImageFunction(this)" Class="rounded-lg img-thumbnail rounded float-left" alt="..." />
-                                <MudImage Src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/13a.jpg"
-                                ObjectFit="ObjectFit.Cover"
-                                ObjectPosition="ObjectPosition.Center"
-                                Fluid="true"
-                                Style="max-width: 72px !important"
-                                onclick="myImageFunction(this)" Class="rounded-lg img-thumbnail rounded float-left" alt="..." />
-                                <MudImage Src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/14a.jpg"
-                                ObjectFit="ObjectFit.Cover"
-                                ObjectPosition="ObjectPosition.Center"
-                                Fluid="true"
-                                Style="max-width: 72px !important"
-                                onclick="myImageFunction(this)" Class="rounded-lg img-thumbnail rounded float-left" alt="..." />
-                                <MudImage Src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/15a.jpg"
-                                ObjectFit="ObjectFit.Cover"
-                                ObjectPosition="ObjectPosition.Center"
-                                Fluid="true"
-                                Style="max-width: 72px !important"
-                                onclick="myImageFunction(this)" Class="rounded-lg img-thumbnail rounded float-left" alt="..." />*@
                         </MudItem>
                     </MudGrid>
                 </MudItem>
@@ -83,7 +59,13 @@
                             <MudFab Size="Size.Small" class="ma-1" Color="Color.Primary" Label="Buy Now" />
                             <MudFab Size="Size.Small" class="ma-1" Color="Color.Default" StartIcon="@Icons.Material.Filled.ShoppingCart" Label="Add Cart" />
                             <MudFab Size="Size.Small" class="ma-1" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Favorite" Label="1233132" />
-                            <MudFab Size="Size.Small" class="ma-1" Color="Color.Dark" StartIcon="@Icons.Filled.Share" Label="Shared" />
+                            <MudFab Size="Size.Small" class="ma-1" Color="Color.Dark" StartIcon="@Icons.Filled.Share" Label="Shared" OnClick="@(()=>{IsShared = !IsShared;})"/>
+
+                            <MudPopover Open="IsShared" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" Paper="false">
+                                <MudPaper Outlined="true" Class="px-4 py-8">
+                                    <MudTextField T="string" Label="Shared is product" Lines="3" Variant="Variant.Outlined" Text="" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.FileCopy"/>
+                                </MudPaper>
+                            </MudPopover>
                         </div>
                     </MudStack>
                 </MudItem>
@@ -124,7 +106,6 @@
                                 @if (product.Reviews == null)
                                 {
                                     <MudText Typo="Typo.h5" Style="text-decoration:solid;">There are no ratings.</MudText>
-
                                 }
                                 else
                                 {
@@ -136,8 +117,6 @@
                                     {
                                         <div class="d-flex align-center justify-space-between">
                                             <MudText Typo="Typo.caption" Class="pl-2">Results:@pagerProductReview.GetStartItems() - @pagerProductReview.GetEndItems() of @pagerProductReview.Items.Count() Items </MudText>
-
-
                                             <MudPagination BoundaryCount="0" MiddleCount="0" Count="@pagerProductReview.GetTotalPages()" @bind-Selected="pagerProductReview.Page"
                                                ShowFirstButton="true" ShowLastButton="true" ShowNextButton="true" ShowPreviousButton="true"
                                                Variant="Variant.Text" />
@@ -148,8 +127,6 @@
                         </MudTabPanel>
                     </MudTabs>
                 </MudItem>
-            </MudGrid>
-            <MudGrid>
             </MudGrid>
         }
     </MudItem>
@@ -177,8 +154,8 @@
     public Error Error { get; set; }
     #endregion
 
-
     #region component properties
+    private bool IsShared;
     protected bool visible;
     protected DialogOptions dialogOptions = new() { FullWidth = true };
     protected ProductResponse product { get; set; } = null;

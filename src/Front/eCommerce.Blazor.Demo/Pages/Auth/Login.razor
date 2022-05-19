@@ -1,0 +1,82 @@
+﻿@layout LoginLayout
+@page "/Login"
+
+@inject AuthorizerUserService service
+@inject IAuthProvider loginService
+@inject NavigationManager navigate
+@inject IConfiguration configuration
+@inject BaseLocalStorage localStorage
+
+<EditForm Model="User" OnValidSubmit="LogearUsuario">
+    <DataAnnotationsValidator />
+    <MudStack class="mt-10" Style="width:500px">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Class="align-center">
+            <MudImage Src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" Width="72" Height="72" Class="d-flex flex-1" />
+        </MudStack>
+        <MudStack Spacing="2" Class="px-14 py-2">
+            <MudStack>
+                <MudTextField T="string" Label="Your Email" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Email" Class="d-flex" FullWidth="true" @bind-Text="User.Email" />
+                <ValidationMessage For="@(() => User.Email)" />
+            </MudStack>
+            <MudStack>
+                <MudTextField T="string" Label="Password" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Password" InputType="InputType.Password" Class="d-flex" @bind-Text="User.Password" />
+                <ValidationMessage For="@(() => User.Password)" />
+            </MudStack>
+            <div Class="d-flex justify-space-between flex-grow-1 gap-4 align-center" Elevation="0">
+                <MudCheckBox @bind-Checked="@IsRemember" Label="Remember User" Color="Color.Primary"></MudCheckBox>
+                <MudLink Href="#">DefaForgot password?</MudLink>
+            </div>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" Class="d-flex">Sign in</MudButton>
+        </MudStack>
+
+        <div Class="d-flex flex-column align-content-center justify-center align-center flex-grow-1 gap-4" Elevation="0">
+            <MudText Typo="Typo.overline">Not a member? <MudLink Href="/Register">Register</MudLink></MudText>
+            <MudText Typo="Typo.overline">or sign in with:</MudText>
+            <div Class="d-flex justify-center flex-grow-1 gap-4" Elevation="0">
+                <MudFab Color="Color.Info" StartIcon="@Icons.Custom.Brands.Facebook" Size="Size.Small" />
+                <MudFab Color="Color.Dark" StartIcon="@Icons.Custom.Brands.GitHub" Size="Size.Small" />
+                <MudFab Color="Color.Error" StartIcon="@Icons.Custom.Brands.Google" Size="Size.Small" />
+                <MudFab Color="Color.Default" StartIcon="@Icons.Custom.Brands.Microsoft" Size="Size.Small" />
+            </div>
+            <MudText Typo="Typo.caption" Class="mt-16">© @actualAnno</MudText>
+        </div>
+    </MudStack>
+</EditForm>
+@code {
+    private bool isRemember;
+    public bool IsRemember
+    {
+        get => isRemember;
+        set
+        {
+            if (value) localStorage.Save(User.Email);
+            else localStorage.Remove();
+            isRemember = value;
+        }
+    }
+    public int actualAnno { get => DateTime.Now.Year; }
+
+    private UserInfo User { get; set; }
+
+    public Login()
+    {
+        User = new UserInfo();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        localStorage.key = "UserName";
+        if ((await localStorage.Contain()))
+            User.Email = localStorage.Get<string>().Result;
+    }
+
+    private async Task LogearUsuario()
+    {
+        //string key = configuration["Auth:TokenService"].ToString();
+        //string password = Encode.Encrypt(key, User.Password);
+        //var result = await service.Login(new UserInfo(){ Email = User.Email, Password = password});
+        var result = await service.Login(User);
+        await loginService.Login(result);
+        navigate.NavigateTo("");
+    }
+}

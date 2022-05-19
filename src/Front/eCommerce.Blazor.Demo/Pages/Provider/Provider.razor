@@ -1,0 +1,110 @@
+﻿@layout MainLayout
+@page "/Providers/{category:int}"
+@inject IDialogService Dialog
+@inject ProductService service
+
+<PageTitle>@mainLayout.Title</PageTitle>
+
+<MudGrid Class="d-flex justify-center">
+    <MudItem sm="12" md="11">
+        @if (providers == null)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+        }
+        else if (providers.Count() == 0)
+        {
+            <NotFound />
+        }
+        else
+        {
+            <MudGrid Spacing="4">
+                @foreach (var provider in pagerProviders.GetItemsByPage())
+                {
+                    <MudItem sm="2" md="4">
+                        <MudPaper Style="@($"position: relative; font-weight: 500;")" Height="200px">
+                            <MudOverlay Visible="true" DarkBackground="true" Absolute="true">
+                                <MudChip Color="Color.Primary">@provider.Provider</MudChip>
+                                @*<MudText Typo="Typo.h5" Style="color:white;" Align="Align.Center">@provider.Provider</MudText>*@
+                                <MudStack Row="true">
+                                    <MudTooltip Text="Ir a comprar">
+                                        <MudFab StartIcon="@Icons.Filled.ShoppingCart" Color="Color.Primary" Href="@($"/Shop/{category}/{provider.Id}")" Size="Size.Small" />
+                                    </MudTooltip>
+                                </MudStack>
+                            </MudOverlay>
+                        </MudPaper>
+                    </MudItem>
+                }
+
+                @if (pagerProviders.Items.Count() > pagerProviders.PageSize)
+                {
+                    <MudItem sm="12">
+                        <div class="d-flex align-center justify-space-between">
+                            <MudText Typo="Typo.caption" Class="pl-2">Results:@pagerProviders.GetStartItems() - @pagerProviders.GetEndItems() of @pagerProviders.Items.Count() Items </MudText>
+
+
+                            <MudPagination BoundaryCount="0" MiddleCount="0" Count="@pagerProviders.GetTotalPages()" @bind-Selected="pagerProviders.Page"
+                                   ShowFirstButton="true" ShowLastButton="true" ShowNextButton="true" ShowPreviousButton="true"
+                                   Variant="Variant.Text" />
+                        </div>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    #region component parameters
+    [Parameter]
+    public int category { get; set; }
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+    [CascadingParameter]
+    public Error Error { get; set; }
+    #endregion
+
+
+    #region component properties
+    protected IEnumerable<ProductProviderResponse> providers { get; set; } = null;
+    protected Pager<ProductProviderResponse> pagerProviders;
+    #endregion
+
+    #region component events
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            mainLayout.Title = "Providers";
+            providers = await GetProviders(category);
+            pagerProviders = new Pager<ProductProviderResponse>()
+                {
+                    Page = 1,
+                    PageSize = 12,
+                    Items = providers
+                };
+        }
+        catch (Exception ex)
+        {
+            providers = Enumerable.Empty<ProductProviderResponse>();
+            pagerProviders = new Pager<ProductProviderResponse>()
+                {
+                    Page = 1,
+                    PageSize = 12,
+                    Items = providers
+                };
+            Error.ProcessError(ex);
+        }
+
+
+    }
+    #endregion
+
+    #region component Methos
+    protected async Task<IEnumerable<ProductProviderResponse>> GetProviders(int ProductCategoryId)
+    {
+        var data = await service.GetProductProviders(new ProductProviderRequest() { ProductCategoryId = ProductCategoryId });
+        return data.Response;
+    }
+    #endregion
+}

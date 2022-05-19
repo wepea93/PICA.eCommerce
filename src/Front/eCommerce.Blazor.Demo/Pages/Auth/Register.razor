@@ -1,0 +1,68 @@
+﻿@layout LoginLayout
+@page "/Register"
+@inject AuthorizerUserService service
+@inject IAuthProvider loginService
+@inject NavigationManager navigate
+@inject IConfiguration configuration
+
+
+<EditForm Model="User" OnValidSubmit="CrearUsuario">
+    <DataAnnotationsValidator />
+    <MudStack class="mt-10" Style="width:500px">
+        <MudStack AlignItems="AlignItems.Center" Class="align-center">
+            <MudImage Src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" Width="72" Height="72" Class="d-flex flex-1" />
+        </MudStack>
+        <MudStack Spacing="2" Class="px-14 py-2" AlignItems="AlignItems.Center">
+            @*<MudStack Row="true">
+                <MudTextField T="string" Label="First Name" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Person" Class="d-flex" />
+                <MudTextField T="string" Label="Last Name" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Person" Class="d-flex" />
+            </MudStack>*@
+            <MudStack>
+                <MudTextField T="string" Label="Your Email" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Email" Class="d-flex" FullWidth="true" @bind-Text="User.Email"  />
+                <ValidationMessage For="@(() => User.Email)" />
+            </MudStack>
+            <MudStack>
+                 <MudTextField T="string" Label="Password" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Password" InputType="InputType.Password" Class="d-flex" @bind-Text="User.Password"/>
+                <ValidationMessage For="@(() => User.Password)" />
+            </MudStack>
+            @*<MudStack Row="true">
+                <MudTextField T="string" Label="Password" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Password" InputType="InputType.Password" Class="d-flex" />
+                <MudTextField T="string" Label="Password retry" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Password" InputType="InputType.Password" Class="d-flex" />
+            </MudStack>*@
+            <MudCheckBox @bind-Checked="@Label_CheckBox2" Label="Accept termins and conditions" Color="Color.Primary"></MudCheckBox>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" Class="d-flex">Sing up</MudButton>
+        </MudStack>
+        <div Class="d-flex flex-column align-content-center justify-center align-center flex-grow-1 gap-4" Elevation="0">
+            <MudText Typo="Typo.overline">or:</MudText>
+            <div Class="d-flex justify-center flex-grow-1 gap-4" Elevation="0">
+                <MudFab Color="Color.Info" StartIcon="@Icons.Custom.Brands.Facebook" Size="Size.Small" />
+                <MudFab Color="Color.Dark" StartIcon="@Icons.Custom.Brands.GitHub" Size="Size.Small" />
+                <MudFab Color="Color.Error" StartIcon="@Icons.Custom.Brands.Google" Size="Size.Small" />
+                <MudFab Color="Color.Default" StartIcon="@Icons.Custom.Brands.Microsoft" Size="Size.Small" />
+            </div>
+            <MudText Typo="Typo.caption" Class="mt-16">© @actualAnno</MudText>
+        </div>
+    </MudStack>
+</EditForm>
+@code {
+    public bool Label_CheckBox2 { get; set; } = false;
+    public int actualAnno { get => DateTime.Now.Year; }
+
+    private UserInfo User { get; set; }
+
+    public Register()
+    {
+        User = new UserInfo();
+    }
+
+    private async Task CrearUsuario()
+    {
+        
+        //string key = configuration["Auth:TokenService"].ToString();
+        //string password = Encode.aes(key, User.Password);
+        //var result = await service.CreateUser(new UserInfo(){ Email = User.Email, Password = password});
+        var result = await service.CreateUser(User);
+        await loginService.Login(result);
+        navigate.NavigateTo("");
+    }
+}

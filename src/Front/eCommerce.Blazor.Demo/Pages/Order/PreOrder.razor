@@ -1,0 +1,210 @@
+﻿@layout MainLayout
+@page "/PreOrder"
+@page "/PreOrder/{code}"
+
+<PageTitle>@mainLayout.Title</PageTitle>
+
+<MudGrid Class="d-flex justify-center">
+    <MudItem sm="12" md="11">
+        @if (items == null)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+        }
+        else
+        {
+
+            <MudGrid>
+                <MudItem sm="12" md="8">
+                    <MudStack Spacing="4">
+                        <MudPaper Elevation="0" Class="mt-n1">
+                            @*<EditForm>
+                                <DataAnnotationsValidator />*@
+                            <div class="mud-expand-panel mud-panel-expanded mud-elevation-1 mud-expand-panel-border">
+                                <div class="mud-expand-panel-header">
+                                    <div class="mud-expand-panel-text">
+                                        <MudStack Row="true" Justify="Justify.SpaceBetween">
+                                            <MudText Typo="Typo.h5">Shipping Information</MudText>
+                                            <MudLink Color="Color.Secondary" onclick="@(()=>{isOpenAddressForm = !isOpenAddressForm;})">
+                                                Change
+                                            </MudLink>
+                                        </MudStack>
+                                    </div>
+                                </div>
+                                <div class="mud-collapse-container mud-collapse-entered" style="height:auto;">
+                                    <div class="mud-collapse-wrapper">
+                                        <div class="mud-collapse-wrapper-inner">
+                                            <div class="mud-expand-panel-content">
+                                                @*You have not added any shipping information for the purchase*@
+                                                <p>
+                                                    <b>wilmer pena pabon, +57 3118275939</b><br />
+                                                    calle 137 # 88-76, conjunto residencial altillos de suba 2<br />
+                                                    torre 1, apto 311<br />
+                                                    Bogota, Bogota, Colombia, 111121
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </MudPaper>
+
+                        <MudPaper Elevation="0" Class="mt-n1">
+                            <div class="mud-expand-panel mud-panel-expanded mud-elevation-1 mud-expand-panel-border">
+                                <div class="mud-expand-panel-header">
+                                    <div class="mud-expand-panel-text">
+                                        <MudText Typo="Typo.h5">Details Orden</MudText>
+                                    </div>
+                                </div>
+                                <div class="mud-collapse-container mud-collapse-entered" style="height:auto;">
+                                    <div class="mud-collapse-wrapper">
+                                        <div class="mud-collapse-wrapper-inner">
+                                            <div class="mud-expand-panel-content">
+                                                <MudStack Spacing="4">
+                                                    @for (var i = 0; i < items.Count; i++)
+                                                    {
+                                                        var p = items[i];
+                                                        <ProductComponent view="CartUtilities.ViewCard.order" @bind-currentShop="@p" OnShopChangedCallback="onShopChanged"/>
+                                                    }
+                                                </MudStack>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </MudPaper>
+                    </MudStack>
+                </MudItem>
+                <MudItem sm="12" md="4">
+                    <MudStack Spacing="2">
+                        <div class="mud-expand-panel mud-panel-expanded mud-elevation-1 mud-expand-panel-border">
+                            <div class="mud-expand-panel-header">
+                                <div class="mud-expand-panel-text">
+                                    <div class="d-flex">
+                                        <MudText Typo="Typo.h5">Order Summary</MudText>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mud-collapse-container mud-collapse-entered" style="height:auto;">
+                                <div class="mud-collapse-wrapper">
+                                    <div class="mud-collapse-wrapper-inner">
+                                        <div class="mud-expand-panel-content">
+                                            <MudStack Spacing="4">
+                                                <MudStack Row="true" Class="d-flex justify-space-between flex-grow-1 gap-4">
+                                                    <MudText Typo="Typo.caption">SubTotal</MudText>
+                                                    <MudText Typo="Typo.caption">$@TotalPriceIsCheck</MudText>
+                                                </MudStack>
+                                                <MudStack Row="true" Class="d-flex justify-space-between flex-grow-1 gap-4">
+                                                    <MudText Typo="Typo.caption">Promotional code</MudText>
+                                                    <MudText Typo="Typo.caption">$0</MudText>
+                                                </MudStack>
+                                                <MudStack Row="true" Class="d-flex justify-space-between flex-grow-1 gap-4">
+                                                    <MudText Typo="Typo.caption">Shipping</MudText>
+                                                    <MudText Typo="Typo.caption">Gratis</MudText>
+                                                </MudStack>
+                                                <MudDivider Class="my-2" />
+                                                <MudStack Row="true" Class="d-flex justify-space-between flex-grow-1 gap-4">
+                                                    <MudText Typo="Typo.caption"><strong>Total</strong></MudText>
+                                                    <MudText Typo="Typo.caption"><strong>$@TotalPriceIsCheck</strong></MudText>
+                                                </MudStack>
+                                                <MudDivider Class="my-2" />
+                                                <MudButton Variant="Variant.Filled" FullWidth="true">go to checkout</MudButton>
+                                            </MudStack>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*@*<div class="mud-expand-panel mud-panel-expanded mud-elevation-1 mud-expand-panel-border">
+                            <div class="mud-collapse-container mud-collapse-entered" style="height:auto;">
+                            <div class="mud-collapse-wrapper">
+                            <div class="mud-collapse-wrapper-inner">
+                            <div class="pa-2">
+                            <MudTextField Label="Promotional code" Value="@textPrueba" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Discount" />
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>*@
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        }
+    </MudItem>
+</MudGrid>
+
+<MudDialog @bind-IsVisible="isOpenAddressForm" Options="dialogAddressOptions">
+    <TitleContent>
+        <MudText Typo="Typo.h5">
+            Add new address
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        @*<EditForm>
+            <DataAnnotationsValidator />*@
+            <MudGrid>
+                <MudItem xs="4">
+                    <MudStack>
+                        <MudTextField T="string" Label="First Name" Class="d-flex" FullWidth="true" @bind-Text="@textPrueba" />
+                        @*<ValidationMessage For="@(() => User.Email)" />*@
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudStack>
+                        <MudTextField T="string" Label="Last Name" Class="d-flex" FullWidth="true" @bind-Text="@textPrueba" />
+                        @*<ValidationMessage For="@(() => User.Email)" />*@
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudStack>
+                        <MudTextField T="string" Label="Phone" Class="d-flex" FullWidth="true" @bind-Text="@textPrueba" />
+                        @*<ValidationMessage For="@(() => User.Email)" />*@
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudStack>
+                        <MudTextField T="string" Label="Email Address" Class="d-flex" FullWidth="true" @bind-Text="@textPrueba" />
+                        @*<ValidationMessage For="@(() => User.Email)" />*@
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudStack>
+                        <MudTextField T="string" Label="Contry" Class="d-flex" FullWidth="true" @bind-Text="@textPrueba" />
+                        @*<ValidationMessage For="@(() => User.Email)" />*@
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudStack>
+                        <MudTextField T="string" Label="Town / City" Class="d-flex" FullWidth="true" @bind-Text="@textPrueba" />
+                        @*<ValidationMessage For="@(() => User.Email)" />*@
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudStack>
+                        <MudTextField T="string" Label="Adress" Placeholder="House number and street name" Class="d-flex" FullWidth="true" @bind-Text="@textPrueba" />
+                        @*<ValidationMessage For="@(() => User.Email)" />*@
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudStack>
+                        <MudTextField T="string" Label="Adress" Placeholder="Apartment, suite, unit etc." Class="d-flex" FullWidth="true" @bind-Text="@textPrueba" />
+                        @*<ValidationMessage For="@(() => User.Email)" />*@
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudStack>
+                        <MudTextField T="string" Label="Aditional Information" Class="d-flex" FullWidth="true" @bind-Text="@textPrueba" Lines="5" />
+                        @*<ValidationMessage For="@(() => User.Email)" />*@
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="12">
+
+                    <MudCheckBox @bind-Checked="@boolPrueba" Label="Save as default"></MudCheckBox>
+                </MudItem>
+            </MudGrid>
+        @*</EditForm>*@
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(()=>{isOpenAddressForm = !isOpenAddressForm;})">Cancelar</MudButton>
+        <MudButton OnClick="@(()=>{isOpenAddressForm = !isOpenAddressForm;})" Color="Color.Primary">Confirmar</MudButton>
+    </DialogActions>
+</MudDialog>

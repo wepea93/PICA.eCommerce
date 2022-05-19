@@ -13,6 +13,9 @@ namespace eCommerce.Commons.Objects.Responses.ShoppingCart
         public decimal PercentDiff { get; set; }
         public int Quantity { get; set; }
         public bool Available { get; set; }
-
+        public bool isCheck { get; set; }
+        public bool isNew { get; set; }
+        public bool isUpdate { get; set; }
+        public decimal TotalPrice => ((Price > 0)? Price: Product.Price) * Quantity;
     }
 }

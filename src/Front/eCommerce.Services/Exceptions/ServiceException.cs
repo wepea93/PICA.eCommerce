@@ -18,5 +18,10 @@ namespace eCommerce.Services.Exceptions
             Response = response;
             StatusCode = statusCode;
         }
+        public ServiceException(ServiceResponseError response, int statusCode, Exception? ex) : base(response.Response, ex)
+        {
+            Response = response;
+            StatusCode = statusCode;
+        }
     }
 }

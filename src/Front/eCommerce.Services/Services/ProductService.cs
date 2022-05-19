@@ -3,9 +3,7 @@ using eCommerce.Commons.Objects.Requests.Products;
 using eCommerce.Commons.Objects.Responses;
 using eCommerce.Commons.Objects.Responses.Products;
 using eCommerce.Services.Contracts;
-using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace eCommerce.Services.Services
 {
@@ -13,15 +11,11 @@ namespace eCommerce.Services.Services
     {
         private const string Controller = "Product";
 
-        private readonly JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+        public ProductService(HttpClient http, IConfiguration configuration) : base(http, configuration)
         {
-            NullValueHandling = NullValueHandling.Ignore,
-            MissingMemberHandling = MissingMemberHandling.Ignore
-        };
-
-        public ProductService(HttpClient http) : base(http)
-        {
-
+            Audience = configuration["Auth0:Audiences:ProductsAud"].ToString();
+            CreateMachinneAccessToken = true;
+            CleanAccessToken();
         }
 
         public async Task<ServiceResponse<ProductCatalogResponse>> GetProductCatalog(ProductCatalogRequest request)
@@ -29,7 +23,7 @@ namespace eCommerce.Services.Services
             try
             {
                 const string Metodo = "Catalog";
-                string uri = setGetParametert(request, Metodo);
+                string uri = SetUriQueryParameters(request,Controller, Metodo);
                 return await GetAsync<ServiceResponse<ProductCatalogResponse>>(uri);
             }
             catch
@@ -43,7 +37,7 @@ namespace eCommerce.Services.Services
             try
             {
                 const string Metodo = "Detail";
-                string uri = setGetParametert(request, Metodo);
+                string uri = SetUriQueryParameters(request, Controller, Metodo);
                 return await GetAsync<ServiceResponse<ProductResponse>>(uri);
             }
             catch
@@ -57,7 +51,7 @@ namespace eCommerce.Services.Services
             try
             {
                 const string Metodo = "List";
-                string uri = setGetParametert(request, Metodo);
+                string uri = SetUriQueryParameters(request, Controller, Metodo);
                 return await GetAsync<ServiceResponse<IEnumerable<ProductResponse>>>(uri);
             }
             catch
@@ -71,7 +65,7 @@ namespace eCommerce.Services.Services
             try
             {
                 const string Metodo = "Categories";
-                string uri = setGetParametert(request, Metodo);
+                string uri = SetUriQueryParameters(request, Controller, Metodo);
                 return await GetAsync<ServiceResponse<IEnumerable<ProductCategoryResponse>>>(uri);
             }
             catch
@@ -85,26 +79,13 @@ namespace eCommerce.Services.Services
             try
             {
                 const string Metodo = "Providers";
-                string uri = setGetParametert(request, Metodo);
+                string uri = SetUriQueryParameters(request, Controller, Metodo);
                 return await GetAsync<ServiceResponse<IEnumerable<ProductProviderResponse>>>(uri);
             }
             catch
             {
                 throw;
             }
-        }
-
-        private string getUriBase(string Metodo)
-        {
-            return $"{http.BaseAddress}/{Controller}/{Metodo}";
-        }
-
-        private string setGetParametert<T>(T request, string Metodo)
-        {
-            var json = JsonConvert.SerializeObject(request, jsonSettings);
-            var query = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-            var uri = QueryHelpers.AddQueryString(this.getUriBase(Metodo), query);
-            return uri;
         }
     }
 }

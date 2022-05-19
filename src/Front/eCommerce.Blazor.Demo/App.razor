@@ -2,11 +2,15 @@
     <CascadingAuthenticationState>
         <Router AppAssembly="@typeof(App).Assembly">
             <Found Context="routeData">
-                <AuthorizeRouteView RouteData="@routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <Authorizing>
+                        <p>Determining session state, please wait...</p>
+                    </Authorizing>
                     <NotAuthorized>
                         @if (context.User.Identity?.IsAuthenticated != true)
                         {
                             @*<RedirectToLogin />*@
+                            <Redirect />
                             <p role="alert">Redirec to login.</p>
                         }
                         else

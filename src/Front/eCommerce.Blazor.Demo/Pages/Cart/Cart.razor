@@ -1,45 +1,27 @@
 ﻿@layout MainLayout
-@page "/{Category:int?}"
 @page "/Cart"
 
 <PageTitle>@mainLayout.Title</PageTitle>
 
 <MudGrid Class="d-flex justify-center">
     <MudItem sm="12" md="11">
-        <MudGrid>
-            <MudItem sm="12" md="8">
-                <div class="mud-expand-panel mud-panel-expanded mud-elevation-1 mud-expand-panel-border">
-                    <div class="mud-expand-panel-header">
-                        <div class="mud-expand-panel-text">
-                            <div class="d-flex">
-                                <MudText Typo="Typo.h5">Cart (2 items)</MudText>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mud-collapse-container mud-collapse-entered" style="height:auto;">
-                        <div class="mud-collapse-wrapper">
-                            <div class="mud-collapse-wrapper-inner">
-                                <div class="mud-expand-panel-content">
-                                    <MudStack Spacing="4">
-                                        @*@foreach (var p in Productos)
-                                        {
-                                            <ProductCard view="CartUtilities.ViewCard.Cart" urlImg="@p.url" Nombre="@p.Nombre" Precio="@p.Precio" Descripcion="@p.Descripcion" />
-                                        }*@
-                                    </MudStack>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </MudItem>
-            <MudItem sm="12" md="4">
-                <MudStack Spacing="2">
+        @if (mainLayout.cart == null)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+        }
+        else
+        {
+            <MudGrid>
+                <MudItem sm="12" md="8">
                     <div class="mud-expand-panel mud-panel-expanded mud-elevation-1 mud-expand-panel-border">
                         <div class="mud-expand-panel-header">
                             <div class="mud-expand-panel-text">
-                                <div class="d-flex">
-                                    <MudText Typo="Typo.h5">The total amount of</MudText>
-                                </div>
+                                <MudStack Row="true">
+                                    <MudTooltip Text=@( string.Format("{0} todos",(IsCheckAll.HasValue && IsCheckAll.Value) ? "Desmarcar" : "Marcar"))>
+                                        <MudCheckBox @bind-Checked="@IsCheckAll"></MudCheckBox>
+                                    </MudTooltip>
+                                    <MudText Typo="Typo.h5">Shopping Cart (@strCartItemsCount())</MudText>
+                                </MudStack>
                             </div>
                         </div>
                         <div class="mud-collapse-container mud-collapse-entered" style="height:auto;">
@@ -47,125 +29,80 @@
                                 <div class="mud-collapse-wrapper-inner">
                                     <div class="mud-expand-panel-content">
                                         <MudStack Spacing="4">
-                                            <MudStack Row="true" Class="d-flex justify-space-between flex-grow-1 gap-4">
-                                                <MudText Typo="Typo.caption">Temporary amount</MudText>
-                                                <MudText Typo="Typo.caption">$53.98</MudText>
-                                            </MudStack>
-                                            <MudStack Row="true" Class="d-flex justify-space-between flex-grow-1 gap-4">
-                                                <MudText Typo="Typo.caption">Shipping</MudText>
-                                                <MudText Typo="Typo.caption">Gratis</MudText>
-                                            </MudStack>
-                                            <MudDivider Class="my-2" />
-                                            <MudStack Row="true" Class="d-flex justify-space-between flex-grow-1 gap-4">
-                                                <MudText Typo="Typo.caption"><strong>The total amount of (including VAT)</strong></MudText>
-                                                <MudText Typo="Typo.caption"><strong>$53.98</strong></MudText>
-                                            </MudStack>
-                                            <MudDivider Class="my-2" />
-                                            <MudButton Variant="Variant.Filled" FullWidth="true">go to checkout</MudButton>
+                                            @for (var i = 0; i < mainLayout.cart.Count; i++)
+                                            {
+                                                var p = mainLayout.cart[i];
+                                                <MudStack Row="true">
+                                                    <MudTooltip Text="Seleccionar para compra">
+                                                        <MudCheckBox @bind-Checked="@p.isCheck"></MudCheckBox>
+                                                    </MudTooltip>
+                                                    <ProductComponent view="CartUtilities.ViewCard.Cart" @bind-currentShop="@p" OnRemoveCardCallback="@onRemoveCard" OnShopChangedCallback="onShopChanged"/>
+                                                </MudStack>
+                                            }
                                         </MudStack>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <MudExpansionPanels Dense="true">
-                        <MudExpansionPanel Text="Add a discount code (optional)">
-                            <div class="pa-2">
-                                <MudTextField Label="Promotional code" Value="@MyString2" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Discount" />
+                </MudItem>
+                <MudItem sm="12" md="4">
+                    <MudStack Spacing="2">
+                        <div class="mud-expand-panel mud-panel-expanded mud-elevation-1 mud-expand-panel-border">
+                            <div class="mud-expand-panel-header">
+                                <div class="mud-expand-panel-text">
+                                    <div class="d-flex">
+                                        <MudText Typo="Typo.h5">Order Summary</MudText>
+                                    </div>
+                                </div>
                             </div>
-                        </MudExpansionPanel>
-                    </MudExpansionPanels>
-                </MudStack>
-            </MudItem>
-        </MudGrid>
+                            <div class="mud-collapse-container mud-collapse-entered" style="height:auto;">
+                                <div class="mud-collapse-wrapper">
+                                    <div class="mud-collapse-wrapper-inner">
+                                        <div class="mud-expand-panel-content">
+                                            <MudStack Spacing="4">
+                                                <MudStack Row="true" Class="d-flex justify-space-between flex-grow-1 gap-4">
+                                                    <MudText Typo="Typo.caption">SubTotal</MudText>
+                                                    <MudText Typo="Typo.caption">$@TotalPriceIsCheck</MudText>
+                                                </MudStack>
+                                                <MudDivider Class="my-2" />
+                                                <MudStack Row="true" Class="d-flex justify-space-between flex-grow-1 gap-4">
+                                                    <MudText Typo="Typo.caption"><strong>Total</strong></MudText>
+                                                    <MudText Typo="Typo.caption"><strong>$@TotalPriceIsCheck</strong></MudText>
+                                                </MudStack>
+                                                <MudDivider Class="my-2" />
+                                                <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@OnContinuePreOrder">BUY (@mainLayout.cart.Count(x=> x.isCheck))</MudButton>
+                                            </MudStack>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        }
     </MudItem>
 </MudGrid>
 
-
-@*<div class="mat-layout-grid">
-    <div class="mat-layout-grid-inner">
-    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-9">
-    <MatH5>Cart (@Productos.Count items)</MatH5>
-    <div class="mat-layout-grid">
-    <div class="mat-layout-grid-inner">
-    @foreach (var p in Productos)
-    {
-    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-    <ProductCart urlImg="@p.url" Nombre="@p.Nombre" Precio="@p.Precio" Descripcion="@p.Descripcion" />
-    </div>
-    }
-    </div>
-    </div>
-    </div>
-    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
-    <MatH5>The total amount of</MatH5>
-
-    <div class="mat-layout-grid">
-    <div class="mat-layout-grid-inner">
-
-    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-    <ul class="list-group list-group-flush">
-    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-    Temporary amount
-    <span>$53.98</span>
-    </li>
-    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-    Shipping
-    <span>Gratis</span>
-    </li>
-    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
-    <div>
-    <strong>The total amount of</strong>
-    <strong>
-    <p class="mb-0">(including VAT)</p>
-    </strong>
-    </div>
-    <span><strong>$53.98</strong></span>
-    </li>
-    </ul>
-    </div>
-
-    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-    <MatButtonLink Href="/ButtonLink" Unelevated="true" Style="text-align:center;">go to checkout</MatButtonLink>
-    </div>
-
-    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-    <hr />
-    </div>
-
-    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-    <div class="card mb-4">
-    <div class="card-body">
-    <MatH6 class="panel-title">Add a discount code (optional)</MatH6>
-
-    <MatTextField @bind-Value="@MyString2" Label="Enter discount code" Icon="@MatIconNames.Code" FullWidth="true"></MatTextField>
-    </div>
-    </div>
-    </div>
-    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-    <div class="card mb-4">
-    <div class="card-body">
-
-    <h6 class="mb-4">Expected shipping delivery</h6>
-
-    <p class="mb-4"> Thu., 12.03. - Mon., 16.03.</p>
-    </div>
-    </div>
-    </div>
-    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-    <div class="card mb-4">
-    <div class="card-body">
-
-    <h5 class="mb-4">We accept</h5>
-    <img class="mr-2" width="45px" src="https://mdbootstrap.com/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg" alt="Visa">
-    <img class="mr-2" width="45px" src="https://mdbootstrap.com/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg" alt="American Express">
-    <img class="mr-2" width="45px" src="https://mdbootstrap.com/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg" alt="Mastercard">
-    <img class="mr-2" width="45px" src="https://cdn.icon-icons.com/icons2/1178/PNG/512/paypal-inverted_82042.png" alt="PayPal acceptance mark">
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>*@
+<MudDialog @bind-IsVisible="isOpenRemoveCardForm" Options="dialogOptions">
+    <TitleContent>
+        <MudText Typo="Typo.h5">
+            <MudIcon Icon="@Icons.Filled.ShoppingBasket" Class="mr-3" />Atención!
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (CurrentProduct == null)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+        }
+        else
+        {
+            <MudText Typo="Typo.subtitle2">Esta seguro que desea eliminar el producto @CurrentProduct.Product.Name del carrito ?</MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" OnClick="ok">Confirmar</MudButton>
+    </DialogActions>
+</MudDialog>

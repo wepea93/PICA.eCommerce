@@ -1,0 +1,218 @@
+﻿@using eCommerce.Commons.Objects.Responses.ShoppingCart
+@if (view == CartUtilities.ViewCard.module)
+{
+    <MudCard>
+        <MudCardMedia Image="@product.Image" Height="350" />
+        <MudCardContent>
+            <MudText Typo="Typo.h6">@product.Name</MudText>
+            <MudText Typo="Typo.subtitle2">$ @product.Price</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudTooltip Text="Ver">
+                <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Primary" Href="@($"/Product/{product.Code}")" />
+            </MudTooltip>
+            <MudTooltip Text="Agregar al carro">
+                <MudIconButton Icon="@Icons.Filled.AddShoppingCart" Color="Color.Primary" OnClick="@((e)=>{OnAddCard();})" />
+            </MudTooltip>
+            <MudTooltip Text="Agregar a Favoritos">
+                <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Primary" />
+            </MudTooltip>
+            <MudTooltip Text="compartir">
+                <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Primary" />
+            </MudTooltip>
+        </MudCardActions>
+    </MudCard>
+}
+else if (view == CartUtilities.ViewCard.list)
+{
+    <MudPaper Elevation="1">
+        <MudStack Row="true">
+            <MudImage Src="@product.Image" Height="250" Width="250" ObjectPosition="ObjectPosition.Center" ObjectFit="ObjectFit.Cover" />
+            <MudStack Justify="Justify.FlexEnd" Class="pa-4" Spacing="0" Style="width:100% !important">
+                <MudText Typo="Typo.h6" Class="align-self-start flex-1">@product.Name</MudText>
+                <MudText Typo="Typo.subtitle2" Class="align-self-start flex-1">$ @product.Price</MudText>
+                <MudText Typo="Typo.body2" Class="flex-1" Style="text-align:justify-all !important">@product.Description.FirstOrDefault()</MudText>
+                <MudStack Row="true" Justify="Justify.FlexEnd" Class="align-self-end flex-1">
+                    <MudTooltip Text="Ver">
+                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Primary" Href="@($"/Product/{product.Code}")" />
+                    </MudTooltip>
+                    <MudTooltip Text="Agregar al carro">
+                        <MudIconButton Icon="@Icons.Filled.AddShoppingCart" Color="Color.Primary" OnClick="@((e)=>{OnAddCard();})" />
+                    </MudTooltip>
+                    <MudTooltip Text="Agregar a Favoritos">
+                        <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Primary" />
+                    </MudTooltip>
+                    <MudTooltip Text="compartir">
+                        <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Primary" />
+                    </MudTooltip>
+                </MudStack>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+}
+else if (view == CartUtilities.ViewCard.AddCart)
+{
+    <MudPaper Elevation="1">
+        <MudStack Row="true">
+            <MudImage Src="@product.Image" Height="250" ObjectPosition="ObjectPosition.Center" ObjectFit="ObjectFit.Cover" />
+            <MudStack Justify="Justify.FlexEnd" Class="pa-4" Spacing="0" Style="width:100% !important">
+                <MudText Typo="Typo.h6" Class="align-self-start flex-1">@product.Name</MudText>
+                <MudText Typo="Typo.subtitle2" Class="align-self-start flex-1">$ @product.Price</MudText>
+                <MudText Typo="Typo.body2" Class="flex-1" Style="text-align:justify-all !important">@product.Description.FirstOrDefault()</MudText>
+                <MudStack Row="true" Justify="Justify.SpaceBetween">
+                    <MudText Typo="Typo.subtitle2" Class="align-self-start flex-1">Cantidad: @product.Price</MudText>
+                    <MudStack Row="true" Class="align-self-end flex-1" AlignItems="AlignItems.End" Justify="Justify.FlexEnd">
+                        <MudTooltip Text="Ir al Carro">
+                            <MudIconButton Icon="@Icons.Filled.ShoppingCartCheckout" Color="Color.Primary" Href="/Cart" />
+                        </MudTooltip>
+                        <MudTooltip Text="Continuar Comprando">
+                            <MudIconButton Icon="@Icons.Filled.ArrowForwardIos" Color="Color.Primary" OnClick="@((e)=>{OnContinueShop();})" />
+                        </MudTooltip>
+                    </MudStack>
+                </MudStack>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+}
+else if (view == CartUtilities.ViewCard.Cart)
+{
+    <MudPaper Elevation="1">
+        <MudStack Row="true">
+            <MudImage Src="@product.Image" Height="250" ObjectPosition="ObjectPosition.Center" ObjectFit="ObjectFit.Cover" />
+            <MudStack Justify="Justify.FlexEnd" Class="pa-4" Spacing="0" Style="width:100% !important">
+                <MudText Typo="Typo.h6" Class="align-self-start flex-1">@product.Name</MudText>
+                <MudText Typo="Typo.subtitle2" Class="align-self-start flex-1">$ @product.Price</MudText>
+                <MudText Typo="Typo.body2" Class="flex-1" Style="text-align:justify-all !important">@product.Description.FirstOrDefault()</MudText>
+                <MudStack Row="true" Justify="Justify.SpaceBetween">
+                    <MudNumericField @bind-Value="Quantity" Label="Standard" Variant="Variant.Text" Min="1" Max="10" HelperText="(Note, 1 piece)" Style="width: 200px;" />
+                    <MudStack Row="true" Class="align-self-end flex-1" AlignItems="AlignItems.End">
+                        <MudTooltip Text="Quitar del carrito">
+                            <MudIconButton Icon="@Icons.Filled.RemoveShoppingCart" Color="Color.Primary" OnClick="@((e)=>{OnRemoveCard();})" />
+                        </MudTooltip>
+                        <MudTooltip Text="Agregar a Favoritos">
+                            <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Primary" />
+                        </MudTooltip>
+                    </MudStack>
+                </MudStack>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+}
+else
+{
+    <MudPaper Elevation="1">
+        <MudStack Row="true">
+            <MudImage Src="@product.Image" Height="250" ObjectPosition="ObjectPosition.Center" ObjectFit="ObjectFit.Cover" />
+            <MudStack Justify="Justify.FlexEnd" Class="pa-4" Spacing="0" Style="width:100% !important">
+                <MudText Typo="Typo.h6" Class="align-self-start flex-1">@product.Name</MudText>
+                <MudText Typo="Typo.subtitle2" Class="align-self-start flex-1">$ @product.Price</MudText>
+                <MudText Typo="Typo.body2" Class="flex-1" Style="text-align:justify-all !important">@product.Description.FirstOrDefault()</MudText>
+                <MudStack Row="true">
+                    <MudNumericField @bind-Value="Quantity" Label="Standard" Variant="Variant.Text" Min="1" Max="10" HelperText="(Note, 1 piece)" Style="width: 200px;" />
+                </MudStack>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+}
+
+@code {
+
+    #region component parameters
+    [Parameter]
+    public long Id { get { return _currentShop.Id; } set { _currentShop.Id = value; } }
+    [Parameter]
+    public string CustomerId { get { return _currentShop.CustomerId; } set { _currentShop.CustomerId = value; } }
+    [Parameter]
+    public ProductResponse product { get { return _currentShop.Product; } set { _currentShop.Product = value; } }
+    [Parameter]
+    public decimal InitialPrice { get { return _currentShop.InitialPrice; } set { _currentShop.InitialPrice = value; } }
+    [Parameter]
+    public decimal Price { get { return _currentShop.Price; } set { _currentShop.Price = value; } }
+    [Parameter]
+    public string SigDiff { get { return _currentShop.SigDiff; } set { _currentShop.SigDiff = value; } }
+    [Parameter]
+    public decimal PercentDiff { get { return _currentShop.PercentDiff; } set { _currentShop.PercentDiff = value; } }
+    [Parameter]
+    public int Quantity
+    {
+        get { return _currentShop.Quantity; }
+        set
+        {
+            _currentShop.Quantity = value;
+            if (!_currentShop.isNew)
+                _currentShop.isUpdate = false;
+
+            if (currentShopChanged.HasDelegate)
+                currentShopChanged.InvokeAsync(currentShop);
+
+            OnShopChanged();
+        }
+    }
+    [Parameter]
+    public bool Available { get { return _currentShop.Available; } set { _currentShop.Available = value; } }
+    [Parameter]
+    public ShoppingCartResponse currentShop
+    {
+        get
+        {
+            return _currentShop;
+        }
+        set
+        {
+            _currentShop = value;
+        }
+    }
+
+    [Parameter]
+    public EventCallback<ShoppingCartResponse> currentShopChanged { get; set; }
+    [Parameter]
+    public CartUtilities.ViewCard view { get; set; } = CartUtilities.ViewCard.module;
+    [Parameter]
+    public EventCallback<ShoppingCartResponse> OnAddCardCallback { get; set; }
+    [Parameter]
+    public EventCallback OnContinueShopCallback { get; set; }
+    [Parameter]
+    public EventCallback OnShopChangedCallback { get; set; }
+    [Parameter]
+    public EventCallback<ShoppingCartResponse> OnRemoveCardCallback { get; set; }
+    [CascadingParameter]
+    public MainLayout mainLayout { get; set; }
+    #endregion
+
+    #region component properties
+    private ShoppingCartResponse _currentShop;
+    #endregion
+
+    #region Constructor and implicit operators
+    public ProductComponent()
+    {
+        _currentShop = new ShoppingCartResponse();
+    }
+    #endregion
+
+    #region component Methos
+    private async void OnAddCard()
+    {
+        if (OnAddCardCallback.HasDelegate)
+            await OnAddCardCallback.InvokeAsync(this.currentShop);
+    }
+
+    private async void OnContinueShop()
+    {
+        if (OnContinueShopCallback.HasDelegate)
+            await OnContinueShopCallback.InvokeAsync();
+    }
+
+    private async void OnRemoveCard()
+    {
+        if (OnRemoveCardCallback.HasDelegate)
+            await OnRemoveCardCallback.InvokeAsync(this.currentShop);
+    }
+    private async void OnShopChanged()
+    {
+        if (OnShopChangedCallback.HasDelegate)
+            await OnShopChangedCallback.InvokeAsync();
+    }
+    
+    #endregion
+}

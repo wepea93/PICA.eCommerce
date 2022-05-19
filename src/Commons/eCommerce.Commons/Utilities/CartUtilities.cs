@@ -5,7 +5,7 @@ namespace eCommerce.Commons.Utilities
     {
         public enum ViewCard
         {
-            module, list ,Cart
+            module, list ,Cart, AddCart, order
         }
     }
 }

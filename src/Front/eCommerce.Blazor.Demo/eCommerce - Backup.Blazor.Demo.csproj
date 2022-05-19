@@ -1,0 +1,96 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Common\**" />
+    <Compile Remove="Contracts\**" />
+    <Compile Remove="Pages\EventArgs\**" />
+    <Compile Remove="Services\**" />
+    <Compile Remove="_Pages\**" />
+    <Compile Remove="_Shared\**" />
+    <Content Remove="Common\**" />
+    <Content Remove="Contracts\**" />
+    <Content Remove="Pages\EventArgs\**" />
+    <Content Remove="Services\**" />
+    <Content Remove="_Pages\**" />
+    <Content Remove="_Shared\**" />
+    <EmbeddedResource Remove="Common\**" />
+    <EmbeddedResource Remove="Contracts\**" />
+    <EmbeddedResource Remove="Pages\EventArgs\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <EmbeddedResource Remove="_Pages\**" />
+    <EmbeddedResource Remove="_Shared\**" />
+    <None Remove="Common\**" />
+    <None Remove="Contracts\**" />
+    <None Remove="Pages\EventArgs\**" />
+    <None Remove="Services\**" />
+    <None Remove="_Pages\**" />
+    <None Remove="_Shared\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
+    <PackageReference Include="Blazored.Toast" Version="3.2.2" />
+    <PackageReference Include="MatBlazor" Version="2.8.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.2.8" />
+    <PackageReference Include="MudBlazor" Version="6.0.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.Linq" Version="4.3.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Commons\eCommerce.Commons\eCommerce.Commons.csproj" />
+    <ProjectReference Include="..\eCommerce.Services\eCommerce.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Pages\Cart\Cart.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Login.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Product\Product.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Product\Shared\Filters.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Product\Shared\ProductComponent.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Shop\Shop.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Register.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Shared\LoginLayout.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+    <Content Update="Pages\Shared\MainLayout.razor">
+      <CustomToolNamespace></CustomToolNamespace>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Assets\" />
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
+</Project>

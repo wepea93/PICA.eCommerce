@@ -1,0 +1,52 @@
+{
+  "Service": {
+    "BaseUrl": "http://localhost:5247/api",
+    "TokenService": "33333333-3333-3333-33333333333333333"
+  },
+  "Auth": {
+    "BaseUrl": "http://localhost:5053/api",
+    "TokenService": "b14ca5898a4e4142aace2ea2143a2410"
+  },
+  "Services": {
+    "Products": {
+<<<<<<< HEAD
+      "BaseUrl": "http://localhost:5247/api"
+=======
+      "BaseUrl": "http://localhost:81/api",
+      //"BaseUrl": "http://localhost:5247/api",
+      "TokenService": "33333333-3333-3333-33333333333333333"
+>>>>>>> main
+    },
+    "ShoppingCart": {
+      "BaseUrl": "http://localhost:82/api"
+    },
+    "Customer": {
+      "BaseUrl": "http://localhost:82/api"
+    },
+    "Orders": {
+      "BaseUrl": "http://localhost:82/api"
+    }
+  },
+  "Local": {
+    "Authority": "https://login.microsoftonline.com/",
+    "ClientId": "33333333-3333-3333-33333333333333333"
+  },
+  "Log": {
+    "SeqHost": "http://10.43.102.50:8081",
+    "SeqApiKey": "ccMAI0FJKCbnJLI64yeV",
+    "SeqFilePath": "C:\\Ecommerce\\Logs\\services"
+  },
+  "Auth0": {
+    "Authority": "https://dev-2as-cr7d.us.auth0.com",
+    "ClientId": "mba7xP61UdwbP3ePrUuYqJTga6jmdBGx",
+    "Machine": {
+      "Method": "/oauth/token",
+      "ClientId": "rW6aj01unD6w4VjxxNdaMWLv4ozpxH0n",
+      "ClientSecrect": "9JZNDNoWuapdFFEyWLr8aaLhvHxiwVdtAsSnmIG9FaZYR8jwue-jBV3mjY-b-jI_"
+    },
+    "Audience": "https://ecommerceauth/api",
+    "Audiences": {
+      "ProductsAud": "https://ecommerceproducts/api",
+    }
+  }
+}

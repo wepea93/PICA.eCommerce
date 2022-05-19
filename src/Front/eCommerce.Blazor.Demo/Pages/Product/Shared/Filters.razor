@@ -1,0 +1,241 @@
+﻿@inject ProductService service
+
+<MudStack class="mud-width-full pa-4">
+    <div class="d-flex align-center justify-space-between">
+        <MudText Typo="Typo.h5" Class="mt-4">Filters</MudText>
+        <MudButtonGroup Color="Color.Primary" Variant="Variant.Text">
+            <MudButton OnClick="ClearFilter_Click">Clear</MudButton>
+            <MudButton OnClick="ApplyFilter_Click">Apply</MudButton>
+        </MudButtonGroup>
+    </div>
+    <MudPaper Elevation="1" class="px-1">
+        <MudTextField @bind-Value="filterText"
+                      Label="search..." Variant="Variant.Text"
+                      Adornment="Adornment.End"
+                      AdornmentIcon="@Icons.Filled.Search"
+                      AdornmentColor="Color.Secondary" />
+    </MudPaper>
+    <MudDivider Class="my-2" />
+    <MudText Typo="Typo.h6">Categories</MudText>
+    <MudPaper Elevation="0" MaxHeight="250px" Style="overflow:auto">
+        <MudList @bind-SelectedValue="@_filterCategory" SelectedItemChanged="@OnChangedSelectionCategories" Clickable="true">
+            @foreach (var c in categorias)
+            {
+                <MudListItem Text="@c.Category" Value="@c.Id" />
+            }
+        </MudList>
+    </MudPaper>
+    @if (currentCategory != null)
+    {
+        <MudText Typo="Typo.h6">Providers</MudText>
+        <MudPaper Elevation="0" MaxHeight="250px" Style="overflow:auto">
+            <MudList @bind-SelectedValue="@_filterProvider" SelectedItemChanged="@OnChangedSelectionProviders" Clickable="true">
+                @foreach (var p in currentCategory.ProductProviders)
+                {
+                    <MudListItem Text="@p.Provider" Value="@p.Id" />
+                }
+            </MudList>
+        </MudPaper>
+    }
+    <MudText Typo="Typo.h6" Class="mt-2">Condition</MudText>
+    <MudPaper Elevation="0" class="px-1">
+        <div>
+            <MudCheckBox @bind-Checked="@filterIsNew" Label="NEW"></MudCheckBox>
+        </div>
+        <div>
+            <MudCheckBox @bind-Checked="@filterIsUsed" Label="USED"></MudCheckBox>
+        </div>
+        <div>
+            <MudCheckBox @bind-Checked="@filterIsRenewed" Label="RENEWED"></MudCheckBox>
+        </div>
+    </MudPaper>
+    <MudText Typo="Typo.h6" Class="mt-2">Price</MudText>
+    <MudPaper Elevation="0" class="px-1">
+        <MudRadioGroup T="string" SelectedOptionChanged="rbgFilterTypePrice_OnChange" Class="d-flex flex-column flex-grow-1 gap-4">
+            <MudRadio Color="Color.Primary" Option="@("Under")">Menos de $10mil</MudRadio>
+            <MudRadio Color="Color.Primary" Option="@("Range1")">$10mil to $100mil</MudRadio>
+            <MudRadio Color="Color.Primary" Option="@("Range2")">$100mill to $500mill</MudRadio>
+            <MudRadio Color="Color.Primary" Option="@("Range3")">$500mill to $2millones</MudRadio>
+            <MudRadio Color="Color.Primary" Option="@("Above")">Mas De $2millones</MudRadio>
+            <MudRadio Color="Color.Primary" Option="@("Other")">Otro</MudRadio>
+        </MudRadioGroup>
+        <div class="d-flex align-center">
+            <MudTextField id="TxtMinPrice" @bind-Value="_filterMinPrice" Label="Min..." Variant="Variant.Text" InputType="InputType.Number" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                          Disabled="@(_filterTypePrice != "Other")" />
+            <MudText Typo="Typo.h6" Class="px-2">to</MudText>
+            <MudTextField id="TxtMaxPrice" @bind-Value="_filterMaxPrice" Label="Max" Variant="Variant.Text" InputType="InputType.Number" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                          Disabled="@(_filterTypePrice != "Other")" />
+        </div>
+    </MudPaper>
+    <MudText Typo="Typo.h6" Class="mt-2">Review</MudText>
+    <MudPaper Elevation="0" class="px-1">
+        <MudRating Size="Size.Large" @bind-SelectedValue="filterScore" />
+    </MudPaper>
+</MudStack>
+
+@code {
+
+    #region component parameters
+    [Parameter]
+    public int? filterCategory { get; set; }
+    [Parameter]
+    public int? filterProvider { get; set; }
+    [Parameter]
+    public string? filterText { get; set; }
+    [Parameter]
+    public bool filterIsNew { get; set; }
+    [Parameter]
+    public bool filterIsUsed { get; set; }
+    [Parameter]
+    public bool filterIsRenewed { get; set; }
+    [Parameter]
+    public decimal? filterMinPrice { get; set; }
+    [Parameter]
+    public decimal? filterMaxPrice { get; set; }
+    [Parameter]
+    public int filterScore { get; set; }
+    [Parameter]
+    public EventCallback<Filters> OnFilterApplyCallback { get; set; }
+    [Parameter]
+    public EventCallback<Filters> OnFilterClearCallback { get; set; }
+    [CascadingParameter]
+    public Error Error { get; set; }
+    #endregion
+
+    #region component properties
+    protected decimal? _filterMinPrice = 0;
+    protected decimal? _filterMaxPrice = 0;
+    protected string? _filterTypePrice;
+    protected object _filterCategory { get => filterCategory; set { filterCategory = (int?)value; } }
+    protected object _filterProvider { get => filterProvider; set { filterProvider = (int?)value; } }
+    //protected IEnumerable<NodeInt> Categorias = Enumerable.Empty<NodeInt>();
+    protected IEnumerable<ProductCategoryResponse> categorias = Enumerable.Empty<ProductCategoryResponse>();
+    //protected NodeInt currentCategory;
+
+    protected ProductCategoryResponse currentCategory;
+    protected ProductProviderResponse currentProvider;
+    #endregion
+
+    #region component events
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            categorias = await GetCategories();
+
+        }
+        catch (Exception ex)
+        {
+            Error.ProcessError(ex);
+        }
+    }
+
+    protected async Task ClearFilter_Click()
+    {
+        try
+        {
+            await ClearFilter();
+            if (OnFilterClearCallback.HasDelegate)
+                await OnFilterClearCallback.InvokeAsync(this);
+        }
+        catch (Exception ex)
+        {
+            Error.ProcessError(ex);
+        }
+    }
+
+    protected async Task ApplyFilter_Click()
+    {
+        try
+        {
+            await ApplyFilter();
+            if (OnFilterApplyCallback.HasDelegate)
+                await OnFilterApplyCallback.InvokeAsync(this);
+        }
+        catch (Exception ex)
+        {
+            Error.ProcessError(ex);
+        }
+    }
+
+    protected async Task rbgFilterTypePrice_OnChange(string option)
+    {
+        //here, do your logic with the option
+        _filterTypePrice = option;
+        _filterMinPrice = null;
+        _filterMaxPrice = null;
+    }
+
+    protected async void OnChangedSelectionCategories(MudListItem item)
+    {
+        currentCategory = (item == null) ? new ProductCategoryResponse() { ProductProviders = Enumerable.Empty<ProductProviderResponse>() } : categorias.FirstOrDefault(x => x.Id == (int)item.Value);
+
+        filterProvider = null;
+    }
+    protected async void OnChangedSelectionProviders(MudListItem item)
+    {
+        currentProvider = (item == null) ? null : currentCategory.ProductProviders.FirstOrDefault(x => x.Id == (int)item.Value);
+    }
+    #endregion
+
+    #region component Methos
+    protected async Task ClearFilter()
+    {
+        filterCategory = null;
+        filterProvider = null;
+        filterText = null;
+        filterIsNew = false;
+        filterIsUsed = false;
+        filterIsRenewed = false;
+        filterMinPrice = null;
+        filterMaxPrice = null;
+        filterScore = 0;
+        _filterTypePrice = null;
+        _filterMinPrice = null;
+        _filterMaxPrice = null;
+        categorias = await GetCategories();
+    }
+
+    protected async Task ApplyFilter()
+    {
+        switch (_filterTypePrice)
+        {
+            case "Under":
+                filterMinPrice = 0;
+                filterMaxPrice = 10000;
+                break;
+            case "Range1":
+                filterMinPrice = 10000;
+                filterMaxPrice = 100000;
+                break;
+            case "Range2":
+                filterMinPrice = 100000;
+                filterMaxPrice = 500000;
+                break;
+            case "Range3":
+                filterMinPrice = 500000;
+                filterMaxPrice = 2000000;
+                break;
+            case "Above":
+                filterMinPrice = 2000000;
+                filterMaxPrice = 0;
+                break;
+            case "Other":
+                filterMinPrice = _filterMinPrice;
+                filterMaxPrice = _filterMaxPrice;
+                break;
+            default:
+                filterMinPrice = null;
+                filterMaxPrice = null;
+                _filterMinPrice = null;
+                _filterMaxPrice = null;
+                break;
+        }
+    }
+
+    protected async Task<IEnumerable<ProductCategoryResponse>> GetCategories()
+    {
+        return (await service.GetProductCategories(new ProductCategoryRequest { ProviderRequired = true })).Response;
+    }
+    #endregion
+}
