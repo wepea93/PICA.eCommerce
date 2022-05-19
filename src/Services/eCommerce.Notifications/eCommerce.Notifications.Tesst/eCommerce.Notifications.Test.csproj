@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <InvariantGlobalization>false</InvariantGlobalization>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>

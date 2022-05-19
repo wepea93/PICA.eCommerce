@@ -7,10 +7,11 @@ RUN dotnet restore ./Services/eCommerce.AuthorizerUser.Api/eCommerce.AuthorizerU
 RUN dotnet publish ./Services/eCommerce.AuthorizerUser.Api/eCommerce.AuthorizerUser.Api/eCommerce.AuthorizerUser.Api.csproj -o /app/published-app
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine as runtime
-# Install cultures (same approach as Alpine SDK image)
-RUN apk add --no-cache icu-libs
 # Disable the invariant mode (set in base image)
+ENV DOTNET_RUNNING_IN_CONTAINER=true
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+# Install cultures (same approach as Alpine SDK image)
+RUN apk add --no-cache icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib
 EXPOSE 80
 WORKDIR /app
 COPY --from=build /app/published-app /app
